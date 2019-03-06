@@ -1,7 +1,7 @@
 package com.fmg
 
-import com.fmg.data.Board
-import com.fmg.data.RowByRowBoard
+import com.fmg.data.UnconstrainedBoard
+import com.fmg.data.ConstraintBoard
 import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
 import java.util.*
 
@@ -28,12 +28,14 @@ fun main() {
 
     for (i in 0 until trials) {
         println("Computing trial n° $i...")
-        val board = RowByRowBoard(size)
+        val board = ConstraintBoard(size)
 
         val start = System.nanoTime()
 
         val solver = ConstraintPropagationAndBacktrackingSolver(board, size)
         val steps = solver.createSolveSteps()
+
+        //printSteps(steps)
 
         val numberOfSteps = steps.count()
 
@@ -41,14 +43,14 @@ fun main() {
         stepsStat.accept(numberOfSteps)
 
         //printSolution(steps)
-        //printSteps(steps)
+
     }
 
     println("Time statistics: $timeStat")
     println("Steps statistics: $stepsStat")
 }
 
-private fun printSteps(steps: Sequence<Board>) {
+private fun printSteps(steps: Sequence<UnconstrainedBoard>) {
     steps.forEachIndexed { step, partialSolution ->
         println("Step $step:")
         partialSolution.print()
@@ -59,7 +61,7 @@ private fun printSteps(steps: Sequence<Board>) {
     println("Solved!!!")
 }
 
-private fun printSolution(steps: Sequence<Board>) {
+private fun printSolution(steps: Sequence<UnconstrainedBoard>) {
     val solution = steps.withIndex().last()
     println("Solution in ${solution.index} steps:")
     solution.value.print()

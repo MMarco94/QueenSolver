@@ -5,29 +5,25 @@ package com.fmg.data
  *
  * Any board representable by this class MUST be obtainable by subsequent calls to getNeighbors
  */
-abstract class Board(
-    val size: Int
+abstract class UnconstrainedBoard(
+    val size: Int,
+    val queens: Set<Queen> = emptySet()
 ) {
-
-    /**
-     * @return All the queens in the board
-     */
-    abstract fun getQueens(): Collection<Queen>
 
     /**
      * @return a new board that contains the new given queen
      */
-    abstract fun withQueen(queen: Queen): Board
+    fun withQueen(queen: Queen): UnconstrainedBoard = ConstraintBoard(size, queens + queen)
 
     /**
      * @return a new board without the given queen
      */
-    abstract fun withoutQueen(queen: Queen): Board
+    fun withoutQueen(queen: Queen): UnconstrainedBoard = ConstraintBoard(size, queens - queen)
 
     /**
      * @return Whether this board contains a valid queen configuration or not
      */
-    fun isValid() = getQueens().none { queen -> hasConflicts(queen) }
+    fun isValid() = queens.none { queen -> hasConflicts(queen) }
 
     /**
      * This method returns all the possible moves (valid or not) to generate new boards.
@@ -42,13 +38,13 @@ abstract class Board(
             prev.row < size - 1 -> Queen(prev.row + 1, 0)
             else -> null
         }
-    }.filterNot { q -> q in getQueens() }
+    }.filterNot { q -> q in queens }
 
     //TODO: use merge search?
     /**
      * @return whether a particular queen has conflicts
      */
-    fun hasConflicts(queen: Queen) = getQueens().any { q2 -> q2 != queen && q2.conflicts(queen) }
+    fun hasConflicts(queen: Queen) = queens.any { q2 -> q2 != queen && q2.conflicts(queen) }
 
     /**
      * This method filters the result of getPossibleMoves(), by removing invalid queen combinations
@@ -70,7 +66,7 @@ abstract class Board(
     fun print() {
         for (r in 0 until size) {
             for (c in 0 until size) {
-                if (getQueens().contains(Queen(r, c))) {
+                if (queens.contains(Queen(r, c))) {
                     print("x")
                 } else {
                     print(" ")
