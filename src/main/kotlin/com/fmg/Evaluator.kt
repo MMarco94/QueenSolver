@@ -1,5 +1,7 @@
 package com.fmg
 
+import com.fmg.data.Board
+
 interface Evaluator {
     fun evaluate(board: Board): Double
 }

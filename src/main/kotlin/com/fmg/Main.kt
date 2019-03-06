@@ -1,5 +1,7 @@
 package com.fmg
 
+import com.fmg.data.Board
+import com.fmg.data.RowByRowBoard
 import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
 import java.util.*
 
@@ -24,8 +26,8 @@ fun main() {
     val solver = ConstraintPropagationAndBacktrackingSolver(board, size)
     val steps = solver.createSolveSteps()
 
-    //printSolution(steps)
-    printSteps(steps)
+    printSolution(steps)
+    //printSteps(steps)
 }
 
 private fun printSteps(steps: Sequence<Board>) {

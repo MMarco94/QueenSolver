@@ -10,5 +10,3 @@ fun <T> Sequence<T>.takeWhileInclusive(predicate: (T) -> Boolean): Sequence<T> {
         result
     }
 }
-
-

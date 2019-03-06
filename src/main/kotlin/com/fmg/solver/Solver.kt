@@ -1,6 +1,6 @@
 package com.fmg.solver
 
-import com.fmg.Board
+import com.fmg.data.Board
 import com.fmg.Evaluator
 
 abstract class Solver(val initialBoard: Board, val targetQueens: Int) {
