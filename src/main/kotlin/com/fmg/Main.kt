@@ -47,7 +47,36 @@ fun main() {
     }
 
     println("Time statistics: $timeStat")
-    println("Steps statistics: $stepsStat")
+    println("Steps statistics: $stepsStat \n\n")
+
+
+    //Unconstrained version
+
+    val timeStat2 = DoubleSummaryStatistics()
+    val stepsStat2 = LongSummaryStatistics()
+
+    for (i in 0 until trials) {
+        println("Computing trial n° $i...")
+        val board = UnconstrainedBoard(size)
+
+        val start = System.nanoTime()
+
+        val solver = ConstraintPropagationAndBacktrackingSolver(board, size)
+        val steps = solver.createSolveSteps()
+
+        //printSteps(steps)
+
+        val numberOfSteps = steps.count()
+
+        timeStat2.accept((System.nanoTime() - start) / 1000000000.0)
+        stepsStat2.accept(numberOfSteps)
+
+        //printSolution(steps)
+
+    }
+
+    println("Time statistics: $timeStat2")
+    println("Steps statistics: $stepsStat2")
 }
 
 private fun printSteps(steps: Sequence<UnconstrainedBoard>) {
