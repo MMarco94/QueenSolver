@@ -13,12 +13,12 @@ open class UnconstrainedBoard(
     /**
      * @return a new board that contains the new given queen
      */
-    fun withQueen(queen: Queen): UnconstrainedBoard = UnconstrainedBoard(size, queens + queen)
+    fun withQueen(queen: Queen): UnconstrainedBoard = ConstrainedBoard(size, queens + queen)
 
     /**
      * @return a new board without the given queen
      */
-    fun withoutQueen(queen: Queen): UnconstrainedBoard = UnconstrainedBoard(size, queens - queen)
+    fun withoutQueen(queen: Queen): UnconstrainedBoard = ConstrainedBoard(size, queens - queen)
 
     /**
      * @return Whether this board contains a valid queen configuration or not
