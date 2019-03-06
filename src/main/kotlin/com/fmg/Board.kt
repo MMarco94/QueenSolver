@@ -2,25 +2,22 @@ package com.fmg
 
 import kotlin.math.abs
 
-var boardCreated = 0
+var boardsCreated = 0
 
-class Board(
-    val size: Int,
-    val queens: Set<Queen> = emptySet()
+abstract class Board(
+    val size: Int
 ) {
     init {
-        boardCreated++
+        boardsCreated++
     }
 
-    fun withQueen(queen: Queen) = Board(size, queens + queen)
-
-    fun withoutQueen(queen: Queen) = Board(size, queens - queen)
-
-    fun move(previous: Queen, new: Queen) = Board(size, queens - previous + new)
+    abstract fun withQueen(queen: Queen): Board
+    abstract fun withoutQueen(queen: Queen): Board
+    abstract fun getQueens(): Collection<Queen>
 
     fun isValid(): Boolean {
-        return queens.none { queen ->
-            queens.any { q -> queen != q && queen.conflicts(q) }
+        return getQueens().none { queen ->
+            getQueens().any { q -> queen != q && queen.conflicts(q) }
         }
     }
 
@@ -30,16 +27,17 @@ class Board(
             prev.row < size - 1 -> Queen(prev.row + 1, 0)
             else -> null
         }
-    }.filterNot { q -> q in queens }
+    }.filterNot { q -> q in getQueens() }
 
-    fun getValidMoves() = getPossibleMoves().filter { q ->
-        queens.none { q2 -> q2.conflicts(q) }
+
+    open fun getValidMoves() = getPossibleMoves().filter { q ->
+        getQueens().none { q2 -> q2.conflicts(q) }
     }
 
     fun print() {
         for (r in 0 until size) {
             for (c in 0 until size) {
-                if (queens.contains(Queen(r, c))) {
+                if (getQueens().contains(Queen(r, c))) {
                     print("x")
                 } else {
                     print(" ")
@@ -51,11 +49,58 @@ class Board(
     }
 }
 
+class FullBoard(
+    size: Int,
+    private val queens: Set<Queen> = emptySet()
+) : Board(size) {
+
+    override fun withQueen(queen: Queen) = FullBoard(size, queens + queen)
+    override fun withoutQueen(queen: Queen) = FullBoard(size, queens - queen)
+    override fun getQueens() = queens
+}
+
+/**
+ * This is a board that contains at most one queen per row,
+ * and the rows are filled from the first to the last.
+ *
+ * This class cannot represent all possible boards, but can represent all valid boards
+ */
+class RowByRowBoard private constructor(
+    size: Int,
+    private val queensByRow: Map<Int, Queen>
+) : Board(size) {
+
+    val firstEmptyRow: Int? = if (queensByRow.size < size) {
+        queensByRow.size
+    } else {
+        null
+    }
+
+    constructor(size: Int) : this(size, emptyMap())
+
+    override fun withQueen(queen: Queen) = RowByRowBoard(size, queensByRow + (queen.row to queen))
+    override fun withoutQueen(queen: Queen) = RowByRowBoard(size, queensByRow.filterValues { it == queen })
+    override fun getQueens() = queensByRow.values
+
+    override fun getValidMoves(): Sequence<Queen> {
+        return if (firstEmptyRow == null) {
+            emptySequence()
+        } else {
+            (0..size).asSequence()
+                .map { col ->
+                    Queen(firstEmptyRow, col)
+                }
+                .filter { q ->
+                    getQueens().none { q2 -> q2.conflicts(q) }
+                }
+        }
+    }
+}
+
 data class Queen(
     val row: Int,
     val col: Int
 ) {
-
     fun conflicts(another: Queen): Boolean {
         return row == another.row || col == another.col || abs(row - another.row) == abs(col - another.col)
     }

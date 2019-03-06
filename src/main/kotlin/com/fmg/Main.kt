@@ -19,7 +19,9 @@ fun readInt(message: String): Int {
 
 fun main() {
     val size = readInt("Enter the board size")
-    val board = Board(size)
+    val board1 = FullBoard(size)
+    val board2 = RowByRowBoard(size)
+    val board = board2
 
     //10 = 125072
     ConstraintPropagationAndBacktrackingSolver(board, size)
@@ -30,5 +32,5 @@ fun main() {
             println()
         }
 
-    println("Created $boardCreated boards")
+    println("Created $boardsCreated boards")
 }
