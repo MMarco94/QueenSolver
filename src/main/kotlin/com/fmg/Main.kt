@@ -19,18 +19,28 @@ fun readInt(message: String): Int {
 
 fun main() {
     val size = readInt("Enter the board size")
-    val board1 = FullBoard(size)
-    val board2 = RowByRowBoard(size)
-    val board = board2
+    val board = RowByRowBoard(size)
 
-    //10 = 125072
-    ConstraintPropagationAndBacktrackingSolver(board, size)
-        .createSolveSteps()
-        .forEachIndexed { step, partialSolution ->
-            println("Step $step:")
-            partialSolution.print()
-            println()
-        }
+    val solver = ConstraintPropagationAndBacktrackingSolver(board, size)
+    val steps = solver.createSolveSteps()
 
-    println("Created $boardsCreated boards")
+    //printSolution(steps)
+    printSteps(steps)
+}
+
+private fun printSteps(steps: Sequence<Board>) {
+    steps.forEachIndexed { step, partialSolution ->
+        println("Step $step:")
+        partialSolution.print()
+        println()
+        println("Press enter to continue")
+        scanner.nextLine()
+    }
+    println("Solved!!!")
+}
+
+private fun printSolution(steps: Sequence<Board>) {
+    val solution = steps.withIndex().last()
+    println("Solution in ${solution.index} steps:")
+    solution.value.print()
 }

@@ -2,18 +2,18 @@ package com.fmg
 
 import kotlin.math.abs
 
-var boardsCreated = 0
-
+/**
+ * This class represents a chess board size x size.
+ *
+ * Any board representable by this class MUST be obtainable by subsequent calls to getNeighbors
+ */
 abstract class Board(
     val size: Int
 ) {
-    init {
-        boardsCreated++
-    }
 
+    abstract fun getQueens(): Collection<Queen>
     abstract fun withQueen(queen: Queen): Board
     abstract fun withoutQueen(queen: Queen): Board
-    abstract fun getQueens(): Collection<Queen>
 
     fun isValid(): Boolean {
         return getQueens().none { queen ->
@@ -21,7 +21,7 @@ abstract class Board(
         }
     }
 
-    fun getPossibleMoves() = generateSequence(Queen(0, 0)) { prev ->
+    open fun getPossibleMoves() = generateSequence(Queen(0, 0)) { prev ->
         when {
             prev.col < size - 1 -> Queen(prev.row, prev.col + 1)
             prev.row < size - 1 -> Queen(prev.row + 1, 0)
@@ -29,10 +29,11 @@ abstract class Board(
         }
     }.filterNot { q -> q in getQueens() }
 
-
-    open fun getValidMoves() = getPossibleMoves().filter { q ->
+    fun getValidMoves() = getPossibleMoves().filter { q ->
         getQueens().none { q2 -> q2.conflicts(q) }
     }
+
+    fun getNeighbors() = getValidMoves().map { q -> withQueen(q) }
 
     fun print() {
         for (r in 0 until size) {
@@ -49,6 +50,9 @@ abstract class Board(
     }
 }
 
+/**
+ * This class is the basic implementation of Board, which can represent all possible boards
+ */
 class FullBoard(
     size: Int,
     private val queens: Set<Queen> = emptySet()
@@ -78,20 +82,23 @@ class RowByRowBoard private constructor(
 
     constructor(size: Int) : this(size, emptyMap())
 
-    override fun withQueen(queen: Queen) = RowByRowBoard(size, queensByRow + (queen.row to queen))
-    override fun withoutQueen(queen: Queen) = RowByRowBoard(size, queensByRow.filterValues { it == queen })
     override fun getQueens() = queensByRow.values
+    override fun withQueen(queen: Queen): RowByRowBoard {
+        if (queen.row != firstEmptyRow) {
+            throw IllegalArgumentException("Queens must be inserted sequentially")
+        }
+        return RowByRowBoard(size, queensByRow + (queen.row to queen))
+    }
 
-    override fun getValidMoves(): Sequence<Queen> {
+    override fun withoutQueen(queen: Queen) = RowByRowBoard(size, queensByRow.filterValues { it == queen })
+
+    override fun getPossibleMoves(): Sequence<Queen> {
         return if (firstEmptyRow == null) {
             emptySequence()
         } else {
-            (0..size).asSequence()
+            (0 until size).asSequence()
                 .map { col ->
                     Queen(firstEmptyRow, col)
-                }
-                .filter { q ->
-                    getQueens().none { q2 -> q2.conflicts(q) }
                 }
         }
     }
