@@ -1,7 +1,7 @@
 package com.fmg
 
 import com.fmg.data.UnconstrainedBoard
-import com.fmg.data.ConstraintBoard
+import com.fmg.data.ConstrainedBoard
 import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
 import java.util.*
 
@@ -28,7 +28,7 @@ fun main() {
 
     for (i in 0 until trials) {
         println("Computing trial n° $i...")
-        val board = ConstraintBoard(size)
+        val board = ConstrainedBoard(size)
 
         val start = System.nanoTime()
 

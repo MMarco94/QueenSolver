@@ -5,7 +5,7 @@ package com.fmg.data
  *
  * Any board representable by this class MUST be obtainable by subsequent calls to getNeighbors
  */
-abstract class UnconstrainedBoard(
+open class UnconstrainedBoard(
     val size: Int,
     val queens: Set<Queen> = emptySet()
 ) {
@@ -13,12 +13,12 @@ abstract class UnconstrainedBoard(
     /**
      * @return a new board that contains the new given queen
      */
-    fun withQueen(queen: Queen): UnconstrainedBoard = ConstraintBoard(size, queens + queen)
+    fun withQueen(queen: Queen): UnconstrainedBoard = UnconstrainedBoard(size, queens + queen)
 
     /**
      * @return a new board without the given queen
      */
-    fun withoutQueen(queen: Queen): UnconstrainedBoard = ConstraintBoard(size, queens - queen)
+    fun withoutQueen(queen: Queen): UnconstrainedBoard = UnconstrainedBoard(size, queens - queen)
 
     /**
      * @return Whether this board contains a valid queen configuration or not

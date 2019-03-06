@@ -3,7 +3,7 @@ package com.fmg.data
 /**
  * This class is the basic implementation of Board, which can represent all possible boards
  */
-class ConstraintBoard(
+class ConstrainedBoard(
     size: Int, queens: Set<Queen> = emptySet()
 ) : UnconstrainedBoard(size, queens) {
 
