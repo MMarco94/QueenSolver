@@ -8,7 +8,7 @@ class FullBoard(
     private val queens: Set<Queen> = emptySet()
 ) : Board(size) {
 
+    override fun getQueens() = queens
     override fun withQueen(queen: Queen) = FullBoard(size, queens + queen)
     override fun withoutQueen(queen: Queen) = FullBoard(size, queens - queen)
-    override fun getQueens() = queens
 }
