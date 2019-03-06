@@ -21,13 +21,31 @@ fun readInt(message: String): Int {
 
 fun main() {
     val size = readInt("Enter the board size")
-    val board = RowByRowBoard(size)
+    val trials = readInt("Enter the number of trials")
 
-    val solver = ConstraintPropagationAndBacktrackingSolver(board, size)
-    val steps = solver.createSolveSteps()
+    val timeStat = DoubleSummaryStatistics()
+    val stepsStat = LongSummaryStatistics()
 
-    printSolution(steps)
-    //printSteps(steps)
+    for (i in 0 until trials) {
+        println("Computing trial n° $i...")
+        val board = RowByRowBoard(size)
+
+        val start = System.nanoTime()
+
+        val solver = ConstraintPropagationAndBacktrackingSolver(board, size)
+        val steps = solver.createSolveSteps()
+
+        val numberOfSteps = steps.count()
+
+        timeStat.accept((System.nanoTime() - start) / 1000000000.0)
+        stepsStat.accept(numberOfSteps)
+
+        //printSolution(steps)
+        //printSteps(steps)
+    }
+
+    println("Time statistics: $timeStat")
+    println("Steps statistics: $stepsStat")
 }
 
 private fun printSteps(steps: Sequence<Board>) {
