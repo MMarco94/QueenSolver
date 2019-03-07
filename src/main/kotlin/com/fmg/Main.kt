@@ -50,29 +50,45 @@ fun main() {
             printSteps(chooseSolver(size).createApproximationSequence())
         }
         1 -> {//Solution
-            printSolution(chooseSolver(size).createApproximationSequence())
+            printSolution(
+                chooseSolver(size)
+                    .createApproximationSequence()
+                    .take(readInt("Choose a maximum number of steps"))
+            )
         }
         2 -> {//Benchmark
             val trials = readInt("Enter the number of trials")
+            val maxSteps = readInt("Choose a maximum number of steps")
 
+            val correctnessPercentageStat = DoubleSummaryStatistics()
             val timeStat = DoubleSummaryStatistics()
             val stepsStat = LongSummaryStatistics()
 
 
             for ((name, solver) in getAllSolvers(size)) {
-                println("Computing solver $name")
+                print("Computing using solver $name")
                 for (i in 0 until trials) {
+                    print(".")
                     val approximationSequence = solver.createApproximationSequence()
 
-                    val (took, numberOfSteps) = benchmark {
-                        approximationSequence.count()
+                    val (took, ss) = benchmark {
+                        approximationSequence
+                            .take(maxSteps)
+                            .withIndex()
+                            .last()
                     }
+                    val (steps, solution) = ss
 
                     timeStat.accept(took)
-                    stepsStat.accept(numberOfSteps)
+                    stepsStat.accept(steps)
+                    correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
                 }
+                println()
                 println("Time statistics of $name: $timeStat")
-                println("Steps statistics of $name: $stepsStat \n\n")
+                println("Steps statistics of $name: $stepsStat")
+                println("Correctness probability of $name: ${correctnessPercentageStat.average}")
+                println()
+                println()
             }
         }
         else -> throw IllegalStateException()

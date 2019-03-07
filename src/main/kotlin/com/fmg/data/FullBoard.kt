@@ -20,7 +20,7 @@ open class FullBoard(
      */
     override fun withoutQueen(queen: Queen) = FullBoard(size, queens - queen)
 
-    override fun getNeighbors(): Sequence<Board> {
+    override fun getNeighbors(): Sequence<FullBoard> {
         return if (queens.size == size) {
             //I'm a full board. My neighbors are board with one less queen
             queens.asSequence().map { q -> withoutQueen(q) }

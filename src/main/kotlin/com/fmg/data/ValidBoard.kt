@@ -10,6 +10,8 @@ class ValidBoard private constructor(
 
     constructor(size: Int) : this(size, emptySet())
 
+    override fun isValid() = true
+
     val firstEmptyRow: Int? = (0 until size).asSequence()
         .firstOrNull { row ->
             queens.none { q -> q.row == row }
@@ -24,7 +26,7 @@ class ValidBoard private constructor(
 
     override fun withoutQueen(queen: Queen) = ValidBoard(size, queens - queen)
 
-    override fun getNeighbors(): Sequence<Board> {
+    override fun getNeighbors(): Sequence<ValidBoard> {
         return if (firstEmptyRow == null) {
             emptySequence()
         } else {

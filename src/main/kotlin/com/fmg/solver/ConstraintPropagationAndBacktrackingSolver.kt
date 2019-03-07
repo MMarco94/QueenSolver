@@ -19,7 +19,7 @@ class ConstraintPropagationAndBacktrackingSolver(
                 sequenceOf(newBoard) + solve(newBoard)
             }
             .takeWhileInclusive {
-                it.queens.size < size
+                !it.isNQueenSolution()
             }
     }
 }

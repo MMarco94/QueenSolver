@@ -19,7 +19,9 @@ abstract class Board(
     /**
      * @return Whether this board contains a valid queen configuration or not
      */
-    fun isValid() = queens.none { queen -> hasConflicts(queen) }
+    open fun isValid() = queens.none { queen -> hasConflicts(queen) }
+
+    fun isNQueenSolution() = queens.size == size && isValid()
 
     //TODO: use merge search?
     /**
