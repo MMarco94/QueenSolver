@@ -80,13 +80,13 @@ fun main() {
                     val (steps, solution) = ss
 
                     timeStat.accept(took)
-                    stepsStat.accept(steps)
+                    stepsStat.accept(steps + 1)
                     correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
                 }
                 println()
                 println("Time statistics of $name: $timeStat")
                 println("Steps statistics of $name: $stepsStat")
-                println("Correctness probability of $name: ${correctnessPercentageStat.average}")
+                println("Correctness probability of $name: ${correctnessPercentageStat.average * 100}%")
                 println()
                 println()
             }

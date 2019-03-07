@@ -1,7 +1,7 @@
 package com.fmg.data
 
 /**
- * This class is the basic implementation of Board, which can represent all possible boards
+ * This class represents a board. In this board, only valid solutions are representable
  */
 class ValidBoard private constructor(
     size: Int,

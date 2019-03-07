@@ -2,8 +2,6 @@ package com.fmg.data
 
 /**
  * This class represents a chess board size x size.
- *
- * Any board representable by this class MUST be obtainable by subsequent calls to getNeighbors
  */
 open class FullBoard(
     size: Int,
