@@ -12,6 +12,10 @@ class ValidBoard private constructor(
 
     override fun isValid() = true
 
+
+    /**
+     * index of first empty row. null if the board is complete
+     */
     val firstEmptyRow: Int? = (0 until size).asSequence()
         .firstOrNull { row ->
             queens.none { q -> q.row == row }

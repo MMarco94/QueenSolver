@@ -27,7 +27,7 @@ abstract class Board(
     /**
      * @return whether a particular queen has conflicts
      */
-    fun hasConflicts(queen: Queen) = queens.any { q2 -> q2.conflicts(queen) }
+    fun hasConflicts(queen: Queen) = queens.any { q2 -> queen != q2 && q2.conflicts(queen) }
 
 
     /**

@@ -10,6 +10,9 @@ class ConstraintPropagationAndBacktrackingSolver(
 ) : GraphSearchSolver(size) {
 
     override fun createApproximationSequence() = solve(ValidBoard(size))
+        .takeWhileInclusive {
+            !it.isNQueenSolution()
+        }
 
     private fun solve(board: Board): Sequence<Board> {
         return board
@@ -17,9 +20,6 @@ class ConstraintPropagationAndBacktrackingSolver(
             .shuffled()
             .flatMap { newBoard ->
                 sequenceOf(newBoard) + solve(newBoard)
-            }
-            .takeWhileInclusive {
-                !it.isNQueenSolution()
             }
     }
 }

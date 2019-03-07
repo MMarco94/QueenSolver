@@ -10,7 +10,10 @@ val scanner = Scanner(System.`in`)
 
 fun getAllSolvers(size: Int) = mapOf(
     "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
-    "Hill Climbing" to HillClimbingSolver(size, ConflictEvaluator)
+    "Hill Climbing conflict" to HillClimbingSolver(size, ConflictEvaluator),
+    "Hill Climbing total" to HillClimbingSolver(size, TotalConflictEvaluator),
+    "Hill Climbing free lines" to HillClimbingSolver(size, FreeLinesEvaluator),
+    "Hill Climbing Sum" to HillClimbingSolver(size, SumEvaluator(listOf(ConflictEvaluator, TotalConflictEvaluator, FreeLinesEvaluator)))
 )
 
 fun readInt(message: String): Int {
@@ -60,12 +63,13 @@ fun main() {
             val trials = readInt("Enter the number of trials")
             val maxSteps = readInt("Choose a maximum number of steps")
 
-            val correctnessPercentageStat = DoubleSummaryStatistics()
-            val timeStat = DoubleSummaryStatistics()
-            val stepsStat = LongSummaryStatistics()
 
 
             for ((name, solver) in getAllSolvers(size)) {
+                val correctnessPercentageStat = DoubleSummaryStatistics()
+                val timeStat = DoubleSummaryStatistics()
+                val stepsStat = LongSummaryStatistics()
+
                 print("Computing using solver $name")
                 for (i in 0 until trials) {
                     print(".")
