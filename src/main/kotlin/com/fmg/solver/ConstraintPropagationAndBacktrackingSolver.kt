@@ -1,24 +1,25 @@
 package com.fmg.solver
 
-import com.fmg.data.UnconstrainedBoard
+import com.fmg.data.Board
+import com.fmg.data.ValidBoard
 import com.fmg.shuffled
 import com.fmg.takeWhileInclusive
 
 class ConstraintPropagationAndBacktrackingSolver(
-    initialBoard: UnconstrainedBoard,
-    targetQueens: Int
-) : GraphSearchSolver(initialBoard, targetQueens) {
+    size: Int
+) : GraphSearchSolver(size) {
 
-    override fun createSolveSteps() = solve(initialBoard)
+    override fun createApproximationSequence() = solve(ValidBoard(size))
 
-    private fun solve(board: UnconstrainedBoard): Sequence<UnconstrainedBoard> {
-        return board.getNeighbors()
-            .shuffled() //TODO: use better heuristic?
+    private fun solve(board: Board): Sequence<Board> {
+        return board
+            .getNeighbors()
+            .shuffled()
             .flatMap { newBoard ->
                 sequenceOf(newBoard) + solve(newBoard)
             }
             .takeWhileInclusive {
-                it.queens.size < targetQueens
+                it.queens.size < size
             }
     }
 }

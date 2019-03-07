@@ -1,28 +1,29 @@
 package com.fmg.solver
 
-import com.fmg.data.UnconstrainedBoard
 import com.fmg.Evaluator
+import com.fmg.data.Board
 
-abstract class Solver(val initialBoard: UnconstrainedBoard, val targetQueens: Int) {
-    abstract fun solve(): UnconstrainedBoard
-}
-
-abstract class GraphSearchSolver(initialBoard: UnconstrainedBoard, targetQueens: Int) : Solver(initialBoard, targetQueens) {
-
-    override fun solve(): UnconstrainedBoard {
-        return createSolveSteps().firstOrNull() ?: throw UnableToSolveException("No solution found!")
+abstract class Solver(val size: Int) {
+    fun solve(): Board {
+        val solution = createApproximationSequence().lastOrNull()
+        if (solution == null || solution.queens.size != solution.size || !solution.isValid()) {
+            throw UnableToSolveException("No solutions using the solver ${this::class.java.name}")
+        }
+        return solution
     }
 
-    abstract fun createSolveSteps(): Sequence<UnconstrainedBoard>
+    abstract fun createApproximationSequence(): Sequence<Board>
 }
 
-abstract class LocalOptimizationSolver(initialBoard: UnconstrainedBoard, targetQueens: Int, val evaluator: Evaluator) :
-    Solver(initialBoard, targetQueens) {
+abstract class GraphSearchSolver(size: Int) : Solver(size) {
 
-    abstract fun doStep()
 }
 
-abstract class GlobalOptimizationSolver(initialBoard: UnconstrainedBoard, targetQueens: Int) : Solver(initialBoard, targetQueens) {
+abstract class LocalOptimizationSolver(size: Int, val evaluator: Evaluator) : Solver(size) {
+
+}
+
+abstract class GlobalOptimizationSolver(size: Int) : Solver(size) {
 
     abstract fun doStep()
 }

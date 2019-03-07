@@ -1,23 +1,23 @@
 package com.fmg
 
-import com.fmg.data.UnconstrainedBoard
+import com.fmg.data.Board
 
 interface Evaluator {
-    fun evaluate(board: UnconstrainedBoard): Double
+    fun evaluate(board: Board): Double
 }
 
-class TotalConflictEvaluator : Evaluator {
+object TotalConflictEvaluator : Evaluator {
 
-    override fun evaluate(board: UnconstrainedBoard): Double {
+    override fun evaluate(board: Board): Double {
         return board.queens.sumBy { queen ->
             board.queens.count { q -> queen != q && queen.conflicts(q) }
         }.toDouble()
     }
 }
 
-class ConflictEvaluator : Evaluator {
+object ConflictEvaluator : Evaluator {
 
-    override fun evaluate(board: UnconstrainedBoard): Double {
+    override fun evaluate(board: Board): Double {
         return board.queens.count { queen ->
             board.queens.any { q -> queen != q && queen.conflicts(q) }
         }.toDouble()
