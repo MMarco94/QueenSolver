@@ -2,6 +2,8 @@ package com.fmg.solver
 
 import com.fmg.Evaluator
 import com.fmg.data.Board
+import com.fmg.data.BoardGenerator
+import com.fmg.data.NeighborsGenerator
 
 abstract class Solver(val size: Int) {
     fun solve(): Board {
@@ -19,7 +21,12 @@ abstract class GraphSearchSolver(size: Int) : Solver(size) {
 
 }
 
-abstract class LocalOptimizationSolver(size: Int, val evaluator: Evaluator) : Solver(size) {
+abstract class LocalOptimizationSolver(
+    size: Int,
+    val evaluator: Evaluator,
+    val neighborsGenerator: NeighborsGenerator,
+    val boardGenerator: BoardGenerator
+) : Solver(size) {
 
 }
 

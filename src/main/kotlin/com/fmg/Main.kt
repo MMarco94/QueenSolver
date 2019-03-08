@@ -1,6 +1,6 @@
 package com.fmg
 
-import com.fmg.data.Board
+import com.fmg.data.*
 import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
 import com.fmg.solver.HillClimbingSolver
 import com.fmg.solver.Solver
@@ -10,10 +10,18 @@ val scanner = Scanner(System.`in`)
 
 fun getAllSolvers(size: Int) = mapOf(
     "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
-    "Hill Climbing conflict" to HillClimbingSolver(size, ConflictEvaluator),
-    "Hill Climbing total" to HillClimbingSolver(size, TotalConflictEvaluator),
-    "Hill Climbing free lines" to HillClimbingSolver(size, FreeLinesEvaluator),
-    "Hill Climbing Sum" to HillClimbingSolver(size, SumEvaluator(listOf(ConflictEvaluator, TotalConflictEvaluator, FreeLinesEvaluator)))
+    "Hill Climbing" to HillClimbingSolver(
+        size,
+        TotalConflictEvaluator,
+        HorizontalQueenMoverNeighborsGenerator,
+        OneQueenPerRowRandomBoardGenerator
+    ),
+    "Hill Climbing free lines with free movement" to HillClimbingSolver(
+        size,
+        TotalConflictEvaluator,
+        MQueenMoverNeighborsGenerator,
+        RandomBoardGenerator
+    )
 )
 
 fun readInt(message: String): Int {

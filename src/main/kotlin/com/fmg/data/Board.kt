@@ -1,25 +1,24 @@
 package com.fmg.data
 
-abstract class Board(
+class Board(
     val size: Int,
     val queens: Set<Queen> = emptySet()
 ) {
+
     /**
      * @return a new board that contains the new given queen
      */
-    abstract fun withQueen(queen: Queen): Board
+    fun withQueen(queen: Queen) = Board(size, queens + queen)
 
     /**
      * @return a new board without the given queen
      */
-    abstract fun withoutQueen(queen: Queen): Board
-
-    abstract fun getNeighbors(): Sequence<Board>
+    fun withoutQueen(queen: Queen) = Board(size, queens - queen)
 
     /**
      * @return Whether this board contains a valid queen configuration or not
      */
-    open fun isValid() = queens.none { queen -> hasConflicts(queen) }
+    fun isValid() = queens.none { queen -> hasConflicts(queen) }
 
     fun isNQueenSolution() = queens.size == size && isValid()
 
@@ -28,7 +27,6 @@ abstract class Board(
      * @return whether a particular queen has conflicts
      */
     fun hasConflicts(queen: Queen) = queens.any { q2 -> queen != q2 && q2.conflicts(queen) }
-
 
     /**
      * This method prints the board
@@ -44,6 +42,17 @@ abstract class Board(
                 print("|")
             }
             println()
+        }
+    }
+
+    companion object {
+
+        fun generateAllQueens(size: Int): Sequence<Queen> {
+            return (0 until size).asSequence()
+                .flatMap { row ->
+                    (0 until size).asSequence()
+                        .map { col -> Queen(row, col) }
+                }
         }
     }
 }
