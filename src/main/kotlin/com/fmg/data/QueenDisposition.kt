@@ -1,11 +1,14 @@
 package com.fmg.data
 
+/**
+ * A class that holds queens. It also keeps statistics about the dispositions of the queens on the board, to make most operations O(1)
+ */
 class QueenDisposition private constructor(
     val queens: Set<Queen>,
     val rows: Map<Int, Set<Queen>>,
     val columns: Map<Int, Set<Queen>>,
-    val descendingDiagonal: Map<Int, Set<Queen>>,
-    val ascendingDiagonal: Map<Int, Set<Queen>>
+    val descendingDiagonals: Map<Int, Set<Queen>>,
+    val ascendingDiagonals: Map<Int, Set<Queen>>
 ) {
 
     constructor() : this(emptySet(), emptyMap(), emptyMap(), emptyMap(), emptyMap())
@@ -13,8 +16,8 @@ class QueenDisposition private constructor(
     fun countConflicts(): Int {
         return rows.values.sumBy { r -> r.size * (r.size - 1) / 2 } +
                 columns.values.sumBy { c -> c.size * (c.size - 1) / 2 } +
-                descendingDiagonal.values.sumBy { dd -> dd.size * (dd.size - 1) / 2 } +
-                ascendingDiagonal.values.sumBy { ad -> ad.size * (ad.size - 1) / 2 }
+                descendingDiagonals.values.sumBy { dd -> dd.size * (dd.size - 1) / 2 } +
+                ascendingDiagonals.values.sumBy { ad -> ad.size * (ad.size - 1) / 2 }
     }
 
     fun hasConflicts() = countConflicts() > 0
@@ -23,8 +26,8 @@ class QueenDisposition private constructor(
         var ret = 0
         ret += rows[queen.row]?.size ?: 0
         ret += columns[queen.col]?.size ?: 0
-        ret += descendingDiagonal[queen.descendingDiagonalId]?.size ?: 0
-        ret += ascendingDiagonal[queen.ascendingDiagonalId]?.size ?: 0
+        ret += descendingDiagonals[queen.descendingDiagonalId]?.size ?: 0
+        ret += ascendingDiagonals[queen.ascendingDiagonalId]?.size ?: 0
         if (queen in queens) {
             ret -= 4
         }
@@ -60,10 +63,10 @@ class QueenDisposition private constructor(
                 columns.toMutableMap().also { m ->
                     m[queen.col] = m.getOrElse(queen.col) { HashSet(0) }.plus(queen)
                 },
-                descendingDiagonal.toMutableMap().also { m ->
+                descendingDiagonals.toMutableMap().also { m ->
                     m[queen.descendingDiagonalId] = m.getOrElse(queen.descendingDiagonalId) { HashSet(0) }.plus(queen)
                 },
-                ascendingDiagonal.toMutableMap().also { m ->
+                ascendingDiagonals.toMutableMap().also { m ->
                     m[queen.ascendingDiagonalId] = m.getOrElse(queen.ascendingDiagonalId) { HashSet(0) }.plus(queen)
                 }
             )
@@ -82,10 +85,10 @@ class QueenDisposition private constructor(
             columns.toMutableMap().also { m ->
                 m[queen.col] = m.getValue(queen.col).minus(queen)
             },
-            descendingDiagonal.toMutableMap().also { m ->
+            descendingDiagonals.toMutableMap().also { m ->
                 m[queen.descendingDiagonalId] = m.getValue(queen.descendingDiagonalId).minus(queen)
             },
-            ascendingDiagonal.toMutableMap().also { m ->
+            ascendingDiagonals.toMutableMap().also { m ->
                 m[queen.ascendingDiagonalId] = m.getValue(queen.ascendingDiagonalId).minus(queen)
             }
         )

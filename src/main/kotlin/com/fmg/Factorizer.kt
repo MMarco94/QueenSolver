@@ -7,7 +7,7 @@ interface Factorizer {
 
 object TrivialFactorizer : Factorizer {
     override fun factorize(n: Int): Sequence<Int> {
-        var factors = ArrayList<Int>()
+        val factors = ArrayList<Int>()
         var x = n
         var i = 2
         while (i <= x) {
@@ -20,8 +20,8 @@ object TrivialFactorizer : Factorizer {
         }
 
         while (factors[0] == 2 || factors[0] == 3) {
-            var a = factors[0]
-            var b = factors[1]
+            val a = factors[0]
+            val b = factors[1]
             factors.removeAt(0)
             factors.removeAt(0)
             val c = factors.lastOrNull { it < a * b }

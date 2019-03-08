@@ -1,13 +1,15 @@
 package com.fmg.data
 
+/**
+ * A class that represents a chess board
+ */
 class Board private constructor(
     val size: Int,
     val queenDisposition: QueenDisposition
 ) {
+    val queens: Set<Queen> = queenDisposition.queens
 
     constructor(size: Int) : this(size, QueenDisposition())
-
-    val queens: Set<Queen> = queenDisposition.queens
 
     /**
      * @return a new board that contains the new given queen
