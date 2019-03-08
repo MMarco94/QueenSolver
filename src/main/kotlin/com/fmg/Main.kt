@@ -19,7 +19,7 @@ fun getAllSolvers(size: Int) = mapOf(
     "Hill Climbing free lines with free movement" to HillClimbingSolver(
         size,
         TotalConflictEvaluator,
-        MQueenMoverNeighborsGenerator,
+        OneQueenMoverNeighborsGenerator,
         RandomBoardGenerator
     )
 )
@@ -127,7 +127,7 @@ private fun printSolution(approximationSequence: Sequence<Board>) {
     }
     val (steps, solution) = result
 
-    if (solution.queens.size == solution.size && solution.isValid()) {
+    if (solution.queens.size == solution.size && solution.isNQueenSolution()) {
         println("Solution in $steps steps:")
     } else {
         println("Best approximation after $steps steps:")

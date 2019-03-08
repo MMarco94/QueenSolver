@@ -1,14 +1,14 @@
 package com.fmg.solver
 
-import com.fmg.Evaluator
 import com.fmg.data.Board
 import com.fmg.data.BoardGenerator
+import com.fmg.data.Evaluator
 import com.fmg.data.NeighborsGenerator
 
 abstract class Solver(val size: Int) {
     fun solve(): Board {
         val solution = createApproximationSequence().lastOrNull()
-        if (solution == null || solution.queens.size != solution.size || !solution.isValid()) {
+        if (solution == null || !solution.isNQueenSolution()) {
             throw UnableToSolveException("No solutions using the solver ${this::class.java.name}")
         }
         return solution

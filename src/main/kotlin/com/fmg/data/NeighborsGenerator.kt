@@ -22,7 +22,7 @@ object RowByRowNeighborsGenerator : NeighborsGenerator {
     override fun generateNeighbors(board: Board): Sequence<Board> {
         val firstEmptyRow: Int? = (0 until board.size).asSequence()
             .firstOrNull { row ->
-                board.queens.none { q -> q.row == row }
+                !board.queenDisposition.rows.containsKey(row)
             }
 
         return if (firstEmptyRow == null) {
@@ -36,34 +36,18 @@ object RowByRowNeighborsGenerator : NeighborsGenerator {
 }
 
 /**
- * All the boards obtainable by moving a queen. Generates n^3 boards
- */
-object QueenMoverNeighborsGenerator : NeighborsGenerator {
-
-    override fun generateNeighbors(board: Board): Sequence<Board> {
-        return board.queens.asSequence()
-            .flatMap { q ->
-                val without = board.withoutQueen(q)
-                Board.generateAllQueens(board.size)
-                    .filterNot { q2 -> q2 in board.queens }
-                    .map { q2 -> without.withQueen(q2) }
-            }
-    }
-}
-
-/**
  * All the board obtainable by moving the queen with more conflicts. Generates n^2 boards
  */
-object MQueenMoverNeighborsGenerator : NeighborsGenerator {
+object OneQueenMoverNeighborsGenerator : NeighborsGenerator {
 
     override fun generateNeighbors(board: Board): Sequence<Board> {
-        val queenWithMoreConflicts = board.queens.asSequence()
+        val queenWithMoreConflicts = board.queens
             .maxBy { q ->
-                board.queens.count { q2 -> q2 != q && q2.conflicts(q) }
+                board.queenDisposition.countConflicts(q)
             }!!
         val without = board.withoutQueen(queenWithMoreConflicts)
         return Board.generateAllQueens(board.size)
-            .filterNot { q2 -> q2 in board.queens }
+            .filter { q2 -> q2 !in board.queens }
             .map { q2 -> without.withQueen(q2) }
     }
 }

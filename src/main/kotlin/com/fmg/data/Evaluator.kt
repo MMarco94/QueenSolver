@@ -1,7 +1,5 @@
-package com.fmg
+package com.fmg.data
 
-import com.fmg.data.Board
-import com.fmg.data.Queen
 import java.lang.Integer.max
 
 interface Evaluator {
@@ -11,9 +9,7 @@ interface Evaluator {
 object TotalConflictEvaluator : Evaluator {
 
     override fun evaluate(board: Board): Double {
-        return board.queens.sumBy { queen ->
-            board.queens.count { q -> queen != q && queen.conflicts(q) }
-        }.toDouble()
+        return board.queenDisposition.countConflicts().toDouble()
     }
 }
 
@@ -21,22 +17,16 @@ object ConflictEvaluator : Evaluator {
 
     override fun evaluate(board: Board): Double {
         return board.queens.count { queen ->
-            board.queens.any { q -> queen != q && queen.conflicts(q) }
+            board.queenDisposition.hasConflicts(queen)
         }.toDouble()
     }
 }
 
 object ConflictFreeEvaluator : Evaluator {
     override fun evaluate(board: Board): Double {
-        return - generateSequence(Queen(0, 0)) { prev ->
-            when {
-                prev.col < board.size - 1 -> Queen(prev.row, prev.col + 1)
-                prev.row < board.size - 1 -> Queen(prev.row + 1, 0)
-                else -> null
-            }
-        }
+        return -Board.generateAllQueens(board.size)
             .filterNot { q -> q in board.queens }
-            .count { q -> board.hasConflicts(q) }
+            .count { q -> board.queenDisposition.hasConflicts(q) }
             .toDouble()
 
     }
@@ -52,11 +42,11 @@ object FreeLinesEvaluator : Evaluator {
             }
         val rowConflicts = (0 until board.size).asSequence()
             .sumBy { rowId ->
-                max(0, board.queens.count { q -> q.row  == rowId } - 1)
+                max(0, board.queens.count { q -> q.row == rowId } - 1)
             }
         val columnConflicts = (0 until board.size).asSequence()
             .sumBy { columnId ->
-                max(0, board.queens.count { q -> q.col  == columnId } - 1)
+                max(0, board.queens.count { q -> q.col == columnId } - 1)
             }
 
         return (diagonalConflicts + rowConflicts + columnConflicts).toDouble()
@@ -64,7 +54,7 @@ object FreeLinesEvaluator : Evaluator {
     }
 }
 
-class SumEvaluator (val evaluators : List<Evaluator>) : Evaluator {
+class SumEvaluator(val evaluators: List<Evaluator>) : Evaluator {
     override fun evaluate(board: Board): Double {
         return evaluators.sumByDouble { e -> e.evaluate(board) }
     }

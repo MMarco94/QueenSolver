@@ -1,32 +1,25 @@
 package com.fmg.data
 
-class Board(
+class Board private constructor(
     val size: Int,
-    val queens: Set<Queen> = emptySet()
+    val queenDisposition: QueenDisposition
 ) {
+
+    constructor(size: Int) : this(size, QueenDisposition())
+
+    val queens: Set<Queen> = queenDisposition.queens
 
     /**
      * @return a new board that contains the new given queen
      */
-    fun withQueen(queen: Queen) = Board(size, queens + queen)
+    fun withQueen(queen: Queen) = Board(size, queenDisposition.withQueen(queen))
 
     /**
      * @return a new board without the given queen
      */
-    fun withoutQueen(queen: Queen) = Board(size, queens - queen)
+    fun withoutQueen(queen: Queen) = Board(size, queenDisposition.withoutQueen(queen))
 
-    /**
-     * @return Whether this board contains a valid queen configuration or not
-     */
-    fun isValid() = queens.none { queen -> hasConflicts(queen) }
-
-    fun isNQueenSolution() = queens.size == size && isValid()
-
-    //TODO: use merge search?
-    /**
-     * @return whether a particular queen has conflicts
-     */
-    fun hasConflicts(queen: Queen) = queens.any { q2 -> queen != q2 && q2.conflicts(queen) }
+    fun isNQueenSolution() = queens.size == size && !queenDisposition.hasConflicts()
 
     /**
      * This method prints the board

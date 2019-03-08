@@ -1,6 +1,6 @@
 package com.fmg.solver
 
-import com.fmg.Evaluator
+import com.fmg.data.Evaluator
 import com.fmg.data.Board
 import com.fmg.data.BoardGenerator
 import com.fmg.data.NeighborsGenerator
