@@ -23,7 +23,7 @@ abstract class LocalOptimizationSolver(size: Int, val evaluator: Evaluator) : So
 
 }
 
-abstract class GlobalOptimizationSolver(size: Int) : Solver(size) {
+abstract class GlobalOptimizationSolver(size: Int, val evaluator: Evaluator) : Solver(size) {
 
     abstract fun doStep()
 }
