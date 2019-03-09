@@ -1,4 +1,7 @@
-package com.fmg.data
+package com.fmg.data.genetic
+
+import com.fmg.data.Board
+import com.fmg.data.BoardGenerator
 
 interface PopulationGenerator {
     fun generatePopulation(): Collection<Board>
