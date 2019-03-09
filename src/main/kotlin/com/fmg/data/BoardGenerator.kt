@@ -36,3 +36,22 @@ object OneQueenPerRowRandomBoardGenerator : BoardGenerator {
         }.last()
     }
 }
+
+object OneQueenPerRowAndColumnRandomBoardGenerator : BoardGenerator {
+    override fun generateBoard(size: Int): Board {
+        val rnd = RANDOM
+        var colPositions = mutableListOf<Int>()
+        return generateSequence(Board(size)) { prev ->
+            if (prev.queens.size == size) {
+                null
+            } else {
+                var col = rnd.nextInt(size)
+                while (colPositions.contains(col)) {
+                    col = rnd.nextInt(size)
+                }
+                colPositions.add(col)
+                prev.withQueen(Queen(prev.queens.size, col))
+            }
+        }.last()
+    }
+}

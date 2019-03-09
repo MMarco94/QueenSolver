@@ -1,7 +1,9 @@
 package com.fmg
 
 import com.fmg.data.*
+import com.fmg.data.genetic.*
 import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
+import com.fmg.solver.GeneticSolver
 import com.fmg.solver.HillClimbingSolver
 import com.fmg.solver.Solver
 import java.util.*
@@ -12,7 +14,7 @@ val RANDOM = Random(42)
 val scanner = Scanner(System.`in`)
 
 fun getAllSolvers(size: Int) = mapOf(
-    "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
+    /*"Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
     "Hill Climbing" to HillClimbingSolver(
         size,
         TotalConflictEvaluator,
@@ -24,6 +26,20 @@ fun getAllSolvers(size: Int) = mapOf(
         TotalConflictEvaluator,
         TwoQueenMoverNeighborsGenerator,
         RandomBoardGenerator
+    ),*/
+    "Genetic Algorithm Queens on Different Rows" to GeneticSolver(
+        size,
+        IndependentPopulationGenerator(size, OneQueenPerRowRandomBoardGenerator, 10000),
+        FitnessSelector(5000, TotalConflictEvaluator),
+        RowQueenCrossOver(size),
+        RandomNeighbourMutator(HorizontalQueenMoverNeighborsGenerator)
+    ),
+    "Genetic Algorithm Queens on Different Rows and Columns" to GeneticSolver(
+        size,
+        IndependentPopulationGenerator(size, OneQueenPerRowAndColumnRandomBoardGenerator, 10000),
+        FitnessSelector(5000, DiagonalConflictsEvaluator),
+        RowQueenCrossOver(size),
+        RandomNeighbourMutator(HorizontalQueenMoverNeighborsGenerator)
     )
 )
 

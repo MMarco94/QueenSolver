@@ -54,6 +54,16 @@ object FreeLinesEvaluator : Evaluator {
     }
 }
 
+object DiagonalConflictsEvaluator : Evaluator {
+    override fun evaluate(board: Board): Double {
+        return (-board.size + 1 until board.size).asSequence()
+            .sumBy { diagonalId ->
+                max(0, board.queens.count { q -> (q.row - q.col) == diagonalId } - 1) +
+                        max(0, board.queens.count { q -> (q.row + q.col - board.size + 1) == diagonalId } - 1)
+            }.toDouble()
+    }
+}
+
 class SumEvaluator(val evaluators: List<Evaluator>) : Evaluator {
     override fun evaluate(board: Board): Double {
         return evaluators.sumByDouble { e -> e.evaluate(board) }
