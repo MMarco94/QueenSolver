@@ -30,9 +30,8 @@ abstract class LocalOptimizationSolver(
 
 }
 
-abstract class GlobalOptimizationSolver(size: Int, val evaluator: Evaluator) : Solver(size) {
+abstract class GlobalOptimizationSolver(size: Int) : Solver(size) {
 
-    abstract fun doStep()
 }
 
 class UnableToSolveException(message: String?, cause: Throwable? = null) : Exception(message, cause)

@@ -22,9 +22,6 @@ class QueensDisposition private constructor(
     )
 
     fun hasConflicts(): Boolean {
-        if (conflictsCount != conflictsCount) {
-            throw IllegalStateException("Asd = $conflictsCount; conflictsCount=$conflictsCount")
-        }
         return conflictsCount > 0
     }
 
