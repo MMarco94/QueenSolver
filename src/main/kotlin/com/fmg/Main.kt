@@ -5,6 +5,9 @@ import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
 import com.fmg.solver.HillClimbingSolver
 import com.fmg.solver.Solver
 import java.util.*
+import kotlin.random.Random
+
+val RANDOM = Random(42)
 
 val scanner = Scanner(System.`in`)
 
@@ -16,10 +19,10 @@ fun getAllSolvers(size: Int) = mapOf(
         HorizontalQueenMoverNeighborsGenerator,
         OneQueenPerRowRandomBoardGenerator
     ),
-    "Hill Climbing free lines with free movement" to HillClimbingSolver(
+    "Hill Climbing with free movement" to HillClimbingSolver(
         size,
         TotalConflictEvaluator,
-        OneQueenMoverNeighborsGenerator,
+        TwoQueenMoverNeighborsGenerator,
         RandomBoardGenerator
     )
 )
@@ -102,6 +105,7 @@ fun main() {
                 println()
                 println()
             }
+            enterToExit()
         }
         else -> throw IllegalStateException()
     }
@@ -119,6 +123,7 @@ private fun printSteps(steps: Sequence<Board>) {
         scanner.nextLine()
     }
     println("Finished!!!")
+    enterToExit()
 }
 
 private fun printSolution(approximationSequence: Sequence<Board>) {
@@ -134,6 +139,12 @@ private fun printSolution(approximationSequence: Sequence<Board>) {
     }
     solution.print()
     println("Took ${took * 1000} ms")
+    enterToExit()
+}
+
+private fun enterToExit() {
+    println("Enter to exit")
+    scanner.nextLine()
 }
 
 private fun <R> benchmark(subject: () -> R): Pair<Double, R> {

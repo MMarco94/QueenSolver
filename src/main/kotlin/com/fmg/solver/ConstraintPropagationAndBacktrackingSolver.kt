@@ -18,7 +18,7 @@ class ConstraintPropagationAndBacktrackingSolver(
 
     private fun solve(board: Board): Sequence<Board> {
         return neighborsGenerator.generateNeighbors(board)
-            .filterNot { b -> b.queenDisposition.hasConflicts() }
+            .filterNot { b -> b.queensDisposition.hasConflicts() }
             .shuffled()
             .flatMap { newBoard ->
                 sequenceOf(newBoard) + solve(newBoard)

@@ -9,7 +9,7 @@ interface Evaluator {
 object TotalConflictEvaluator : Evaluator {
 
     override fun evaluate(board: Board): Double {
-        return board.queenDisposition.countConflicts().toDouble()
+        return board.queensDisposition.conflictsCount.toDouble()
     }
 }
 
@@ -17,7 +17,7 @@ object ConflictEvaluator : Evaluator {
 
     override fun evaluate(board: Board): Double {
         return board.queens.count { queen ->
-            board.queenDisposition.hasConflicts(queen)
+            board.queensDisposition.hasConflicts(queen)
         }.toDouble()
     }
 }
@@ -26,7 +26,7 @@ object ConflictFreeEvaluator : Evaluator {
     override fun evaluate(board: Board): Double {
         return -Board.generateAllQueens(board.size)
             .filterNot { q -> q in board.queens }
-            .count { q -> board.queenDisposition.hasConflicts(q) }
+            .count { q -> board.queensDisposition.hasConflicts(q) }
             .toDouble()
 
     }

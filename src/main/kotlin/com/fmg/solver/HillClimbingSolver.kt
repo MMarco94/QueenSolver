@@ -1,10 +1,8 @@
 package com.fmg.solver
 
-import com.fmg.data.Evaluator
-import com.fmg.data.Board
-import com.fmg.data.BoardGenerator
-import com.fmg.data.NeighborsGenerator
-import com.fmg.data.RandomBoardGenerator
+import com.fmg.RANDOM
+import com.fmg.allMinBy
+import com.fmg.data.*
 import com.fmg.takeWhileInclusive
 
 class HillClimbingSolver(
@@ -17,9 +15,10 @@ class HillClimbingSolver(
     override fun createApproximationSequence(): Sequence<Board> {
         return generateSequence(boardGenerator.generateBoard(size)) { previousBoard ->
             neighborsGenerator.generateNeighbors(previousBoard)
-                .groupBy { neighbor -> evaluator.evaluate(neighbor) }
-                .minBy { (cost, _) -> cost }!!
-                .value.random()
+                .allMinBy { board ->
+                    evaluator.evaluate(board)
+                }
+                .random(RANDOM)
         }.takeWhileInclusive {
             !it.isNQueenSolution()
         }

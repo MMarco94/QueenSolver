@@ -1,5 +1,6 @@
 package com.fmg.data
 
+import com.fmg.RANDOM
 import java.util.*
 
 interface BoardGenerator {
@@ -12,7 +13,7 @@ object EmptyBoardGenerator : BoardGenerator {
 
 object RandomBoardGenerator : BoardGenerator {
     override fun generateBoard(size: Int): Board {
-        val rnd = Random()
+        val rnd = RANDOM
         return generateSequence(Board(size)) { prev ->
             if (prev.queens.size == size) {
                 null
@@ -25,7 +26,7 @@ object RandomBoardGenerator : BoardGenerator {
 
 object OneQueenPerRowRandomBoardGenerator : BoardGenerator {
     override fun generateBoard(size: Int): Board {
-        val rnd = Random()
+        val rnd = RANDOM
         return generateSequence(Board(size)) { prev ->
             if (prev.queens.size == size) {
                 null

@@ -5,23 +5,23 @@ package com.fmg.data
  */
 class Board private constructor(
     val size: Int,
-    val queenDisposition: QueenDisposition
+    val queensDisposition: QueensDisposition
 ) {
-    val queens: Set<Queen> = queenDisposition.queens
+    val queens: Set<Queen> = queensDisposition.queens
 
-    constructor(size: Int) : this(size, QueenDisposition())
+    constructor(size: Int) : this(size, QueensDisposition(size))
 
     /**
      * @return a new board that contains the new given queen
      */
-    fun withQueen(queen: Queen) = Board(size, queenDisposition.withQueen(queen))
+    fun withQueen(queen: Queen) = Board(size, queensDisposition.withQueen(queen))
 
     /**
      * @return a new board without the given queen
      */
-    fun withoutQueen(queen: Queen) = Board(size, queenDisposition.withoutQueen(queen))
+    fun withoutQueen(queen: Queen) = Board(size, queensDisposition.withoutQueen(queen))
 
-    fun isNQueenSolution() = queens.size == size && !queenDisposition.hasConflicts()
+    fun isNQueenSolution() = queens.size == size && !queensDisposition.hasConflicts()
 
     /**
      * This method prints the board
