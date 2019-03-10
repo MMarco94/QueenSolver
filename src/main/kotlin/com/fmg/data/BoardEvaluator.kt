@@ -2,18 +2,18 @@ package com.fmg.data
 
 import java.lang.Integer.max
 
-interface Evaluator {
+interface BoardEvaluator {
     fun evaluate(board: Board): Double
 }
 
-object TotalConflictEvaluator : Evaluator {
+object TotalConflictEvaluator : BoardEvaluator {
 
     override fun evaluate(board: Board): Double {
         return board.queensDisposition.conflictsCount.toDouble()
     }
 }
 
-object ConflictEvaluator : Evaluator {
+object ConflictEvaluator : BoardEvaluator {
 
     override fun evaluate(board: Board): Double {
         return board.queens.count { queen ->
@@ -22,7 +22,7 @@ object ConflictEvaluator : Evaluator {
     }
 }
 
-object ConflictFreeEvaluator : Evaluator {
+object ConflictFreeEvaluator : BoardEvaluator {
     override fun evaluate(board: Board): Double {
         return -Board.generateAllQueens(board.size)
             .filterNot { q -> q in board.queens }
@@ -33,7 +33,7 @@ object ConflictFreeEvaluator : Evaluator {
 }
 
 // https://arxiv.org/ftp/arxiv/papers/1802/1802.02006.pdf
-object FreeLinesEvaluator : Evaluator {
+object FreeLinesEvaluator : BoardEvaluator {
     override fun evaluate(board: Board): Double {
         val diagonalConflicts = (-board.size + 1 until board.size).asSequence()
             .sumBy { diagonalId ->
@@ -54,7 +54,7 @@ object FreeLinesEvaluator : Evaluator {
     }
 }
 
-object DiagonalConflictsEvaluator : Evaluator {
+object DiagonalConflictsEvaluator : BoardEvaluator {
     override fun evaluate(board: Board): Double {
         return (-board.size + 1 until board.size).asSequence()
             .sumBy { diagonalId ->
@@ -64,7 +64,7 @@ object DiagonalConflictsEvaluator : Evaluator {
     }
 }
 
-class SumEvaluator(val evaluators: List<Evaluator>) : Evaluator {
+class SumEvaluator(val evaluators: List<BoardEvaluator>) : BoardEvaluator {
     override fun evaluate(board: Board): Double {
         return evaluators.sumByDouble { e -> e.evaluate(board) }
     }

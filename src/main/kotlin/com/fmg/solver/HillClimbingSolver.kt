@@ -7,7 +7,7 @@ import com.fmg.takeWhileInclusive
 
 class HillClimbingSolver(
     size: Int,
-    evaluator: Evaluator,
+    evaluator: BoardEvaluator,
     neighborsGenerator: NeighborsGenerator,
     boardGenerator: BoardGenerator = RandomBoardGenerator
 ) : LocalOptimizationSolver(size, evaluator, neighborsGenerator, boardGenerator) {

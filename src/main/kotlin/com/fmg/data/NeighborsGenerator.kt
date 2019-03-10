@@ -90,10 +90,15 @@ object QueenRemoverNeighborsGenerator : NeighborsGenerator {
 }
 
 /**
- * All the boards obtainable by moving a queen in a row. Generates n^2 boards
+ * Pre: in the board there must be present at most one queen per row and the number of queens must be greater or equal of K
+ *
+ * Return all the boards obtainable by moving K queens in a row.
+ *
+ * The K queens among the others are selected using the queenEvaluator
  */
 class KQueensMoverNeighborsGenerator(
-    val k: Int
+    val k: Int,
+    val queenEvaluator:  QueenEvaluator = TotalQueenConflictEvaluator
 ) : NeighborsGenerator {
 
     override fun generateNeighbors(board: Board): Sequence<Board> {
@@ -101,7 +106,7 @@ class KQueensMoverNeighborsGenerator(
             board,
             board.queens
                 .asSequence()
-                .shuffled()
+                .sortedBy { q -> queenEvaluator.evaluate(q,board)}
                 .take(k)
                 .toList()
         )

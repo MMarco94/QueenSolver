@@ -1,7 +1,7 @@
 package com.fmg.data.genetic
 
 import com.fmg.data.Board
-import com.fmg.data.Evaluator
+import com.fmg.data.BoardEvaluator
 
 interface Selector {
     fun select(population: Collection<Board>): Collection<Board>
@@ -9,7 +9,7 @@ interface Selector {
 
 class FitnessSelector(
     val boardLimit: Int,
-    val fitnessFunction: Evaluator
+    val fitnessFunction: BoardEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>) : Collection<Board> {
         return population.sortedBy { board -> fitnessFunction.evaluate(board) }.take(boardLimit)
