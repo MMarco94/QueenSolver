@@ -19,7 +19,8 @@ class GeneticSolver(
             val selected = selector.select(population)
             val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
-            mutated
+            var p = population
+            p - selected + mutated
         }
     }
 

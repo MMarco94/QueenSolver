@@ -12,6 +12,6 @@ class FitnessSelector(
     val fitnessFunction: Evaluator
 ) : Selector {
     override fun select(population: Collection<Board>) : Collection<Board> {
-        return population.sortedBy { b -> fitnessFunction.evaluate(b) }.take(boardLimit)
+        return population.sortedBy { board -> fitnessFunction.evaluate(board) }.take(boardLimit)
     }
 }
