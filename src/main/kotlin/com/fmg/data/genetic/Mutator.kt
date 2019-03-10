@@ -31,9 +31,9 @@ class RandomNeighbourMutator(val neighborsGenerator: NeighborsGenerator) : Mutat
 class BasicMutator(val size: Int, val probability: Double) : Mutator {
     override fun mutate(board: Board): Board {
         var b = board
-        board.queens.forEach { queen ->
+        b.queens.forEach { queen ->
             if (RANDOM.nextDouble() < probability)
-                b = board.withoutQueen(queen).withQueen(Queen(queen.row, RANDOM.nextInt(size)))
+                b = b.withoutQueen(queen).withQueen(Queen(queen.row, RANDOM.nextInt(size)))
         }
         return b
     }

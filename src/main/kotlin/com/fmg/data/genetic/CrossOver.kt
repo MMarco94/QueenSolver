@@ -23,7 +23,7 @@ class RowQueenCrossOver(val boardSize: Int) : CrossOver {
         }
 
         val rowIndexCrossOver = RANDOM.nextInt(boardSize)
-        var population = boardPopulation.toMutableList().shuffled().toMutableList()
+        var population = boardPopulation.toMutableList()
         var returnBoardCollection = mutableListOf<Board>()
 
         while (population.isNotEmpty()) {
