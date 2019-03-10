@@ -14,7 +14,12 @@ val RANDOM = Random(42)
 val scanner = Scanner(System.`in`)
 
 fun getAllSolvers(size: Int) = mapOf(
-    "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
+    "Hill Climbing log row swapper" to HillClimbingSolver(
+        size,
+        TotalConflictEvaluator,
+        LogRowSwapperNeighborsGenerator(),
+        OneQueenPerRowAndColumnRandomBoardGenerator
+    ),
     "Hill Climbing" to HillClimbingSolver(
         size,
         TotalConflictEvaluator,
@@ -33,6 +38,7 @@ fun getAllSolvers(size: Int) = mapOf(
         KQueensMoverNeighborsGenerator(3),
         OneQueenPerRowRandomBoardGenerator
     ),
+    "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
     "Genetic Algorithm Queens on Different Rows" to GeneticSolver(
         size,
         IndependentPopulationGenerator(size, OneQueenPerRowRandomBoardGenerator, 10000),

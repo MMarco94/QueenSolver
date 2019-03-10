@@ -1,7 +1,7 @@
 package com.fmg.data
 
-import com.fmg.allMinBy
 import com.fmg.shuffled
+import kotlin.math.log2
 
 interface NeighborsGenerator {
 
@@ -98,7 +98,7 @@ object QueenRemoverNeighborsGenerator : NeighborsGenerator {
  */
 class KQueensMoverNeighborsGenerator(
     val k: Int,
-    val queenEvaluator:  QueenEvaluator = TotalQueenConflictEvaluator
+    val queenEvaluator: QueenEvaluator = TotalQueenConflictEvaluator
 ) : NeighborsGenerator {
 
     override fun generateNeighbors(board: Board): Sequence<Board> {
@@ -106,7 +106,7 @@ class KQueensMoverNeighborsGenerator(
             board,
             board.queens
                 .asSequence()
-                .sortedBy { q -> queenEvaluator.evaluate(q,board)}
+                .sortedBy { q -> queenEvaluator.evaluate(q, board) }
                 .take(k)
                 .toList()
         )
@@ -133,3 +133,31 @@ class KQueensMoverNeighborsGenerator(
     }
 }
 
+/**
+ * Given a board in which there's only one queen per row and per column, this class generates all the boards by
+ * taking the worst log(N) rows, and swapping them with log(N) random rows.
+ * Generates log(N)*log(N) boards
+ */
+class LogRowSwapperNeighborsGenerator(
+    val queenEvaluator: QueenEvaluator = TotalQueenConflictEvaluator
+) : NeighborsGenerator {
+    override fun generateNeighbors(board: Board): Sequence<Board> {
+        return board.queens.asSequence()
+            .sortedBy { q -> queenEvaluator.evaluate(q, board) }
+            .take(log2(board.size.toDouble()).toInt() + 1)
+            .flatMap { q1 ->
+                val firstRow = q1.row
+                val withoutQueen = board.withoutQueen(q1)
+                (firstRow + 1 until board.size).asSequence()
+                    .shuffled()
+                    .take(log2(board.size.toDouble()).toInt() + 1)
+                    .map { secondRow ->
+                        val q2 = board.queens.single { q -> q.row == secondRow }
+                        withoutQueen
+                            .withoutQueen(q2)
+                            .withQueen(Queen(q1.row, q2.col))
+                            .withQueen(Queen(q2.row, q1.col))
+                    }
+            }
+    }
+}
