@@ -1,5 +1,8 @@
 package com.fmg.data
 
+import com.fmg.allMinBy
+import com.fmg.shuffled
+
 interface NeighborsGenerator {
 
     fun generateNeighbors(board: Board): Sequence<Board>
@@ -85,3 +88,43 @@ object QueenRemoverNeighborsGenerator : NeighborsGenerator {
         }
     }
 }
+
+/**
+ * All the boards obtainable by moving a queen in a row. Generates n^2 boards
+ */
+class KQueensMoverNeighborsGenerator(
+    val k: Int
+) : NeighborsGenerator {
+
+    override fun generateNeighbors(board: Board): Sequence<Board> {
+        return recursiveRowDispositions(
+            board,
+            board.queens
+                .asSequence()
+                .shuffled()
+                .take(k)
+                .toList()
+        )
+    }
+
+    private fun recursiveRowDispositions(board: Board, queensList: List<Queen>): Sequence<Board> {
+        return if (queensList.isNotEmpty()) {
+            generateBoardsMovingOneQueenInTheCurrentRow(board, queensList.first())
+                .flatMap { newBoard ->
+                    recursiveRowDispositions(newBoard, queensList.drop(1))
+                }
+        } else {
+            sequenceOf(board)
+        }
+
+    }
+
+    private fun generateBoardsMovingOneQueenInTheCurrentRow(board: Board, q: Queen): Sequence<Board> {
+        val withoutQueen = board.withoutQueen(q)
+        return (0 until board.size).asSequence()
+            .map { col ->
+                withoutQueen.withQueen(Queen(q.row, col))
+            }
+    }
+}
+

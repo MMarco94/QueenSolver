@@ -27,6 +27,12 @@ fun getAllSolvers(size: Int) = mapOf(
         TwoQueenMoverNeighborsGenerator,
         RandomBoardGenerator
     ),
+    "Hill Climbing with multiple moves" to HillClimbingSolver(
+        size,
+        TotalConflictEvaluator,
+        KQueensMoverNeighborsGenerator(5),
+        OneQueenPerRowRandomBoardGenerator
+    ),
     "Genetic Algorithm Queens on Different Rows" to GeneticSolver(
         size,
         IndependentPopulationGenerator(size, OneQueenPerRowRandomBoardGenerator, 10000),
