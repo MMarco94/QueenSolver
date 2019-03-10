@@ -19,13 +19,13 @@ class GeneticSolver(
             val selected = selector.select(population)
             val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
-            mutated
+            population - selected + mutated
         }
     }
 
     override fun createApproximationSequence(): Sequence<Board> {
         return createPopulationSequence()
-            .map { ps -> ps.first() }
+            .map { ps -> ps.random() }
             .takeWhileInclusive { !it.isNQueenSolution() }
     }
 }

@@ -32,7 +32,7 @@ fun getAllSolvers(size: Int) = mapOf(
         IndependentPopulationGenerator(size, OneQueenPerRowRandomBoardGenerator, 1000),
         FitnessSelector(500, ConflictEvaluator),
         RowQueenCrossOver(size),
-        RandomNeighbourMutator(HorizontalQueenMoverNeighborsGenerator)
+        BasicMutator(size, 0.1)
     )
 )
 
