@@ -29,8 +29,8 @@ fun getAllSolvers(size: Int) = mapOf(
     ),
     "Genetic Algorithm Queens on Different Rows" to GeneticSolver(
         size,
-        IndependentPopulationGenerator(size, OneQueenPerRowRandomBoardGenerator, 1000),
-        FitnessSelector(500, ConflictEvaluator),
+        IndependentPopulationGenerator(size, OneQueenPerRowRandomBoardGenerator, 10000),
+        FitnessSelector(5000, TotalConflictEvaluator),
         RowQueenCrossOver(size),
         BasicMutator(size, 0.1)
     )

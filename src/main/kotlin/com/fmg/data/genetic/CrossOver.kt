@@ -4,6 +4,7 @@ import com.fmg.RANDOM
 import com.fmg.data.Board
 import com.fmg.solver.UnableToSolveException
 import java.lang.Exception
+import java.lang.IllegalArgumentException
 
 interface CrossOver {
     fun crossOver(boardPopulation: Collection<Board>): Collection<Board>
@@ -19,12 +20,12 @@ class TrivialCrossOver : CrossOver {
 class RowQueenCrossOver(val boardSize: Int) : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
-            throw Exception("The cardinality of the selected population must be even")
+            throw IllegalArgumentException("The cardinality of the selected population must be even")
         }
 
         val rowIndexCrossOver = RANDOM.nextInt(boardSize)
-        var population = boardPopulation.toMutableList()
-        var returnBoardCollection = mutableListOf<Board>()
+        val population = boardPopulation.toMutableList()
+        val returnBoardCollection = mutableListOf<Board>()
 
         while (population.isNotEmpty()) {
             var board1 = population.removeAt(0)

@@ -25,7 +25,7 @@ class GeneticSolver(
 
     override fun createApproximationSequence(): Sequence<Board> {
         return createPopulationSequence()
-            .map { ps -> ps.random() }
+            .map { it.firstOrNull { b -> b.isNQueenSolution() } ?: it.last() }
             .takeWhileInclusive { !it.isNQueenSolution() }
     }
 }
