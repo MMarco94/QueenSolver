@@ -10,7 +10,6 @@ interface CrossOver {
     fun crossOver(boardPopulation: Collection<Board>): Collection<Board>
 }
 
-
 class TrivialCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         return boardPopulation
@@ -32,8 +31,8 @@ class RowQueenCrossOver(val boardSize: Int) : CrossOver {
             var board2 = population.removeAt(0)
 
             for (i in rowIndexCrossOver until boardSize) {
-                var q1 = board1.queens.filter { q -> q.row == i }.first()
-                var q2 = board2.queens.filter { q -> q.row == i }.first()
+                var q1 = board1.queens.single { q -> q.row == i }
+                var q2 = board2.queens.single { q -> q.row == i }
 
                 board1 = board1.withoutQueen(q1).withQueen(q2)
                 board2 = board2.withoutQueen(q2).withQueen(q1)
@@ -44,6 +43,40 @@ class RowQueenCrossOver(val boardSize: Int) : CrossOver {
         }
 
         return returnBoardCollection
+    }
+}
+
+class RowQueenCrossOverWithColumnCheck(val boardSize: Int) : CrossOver {
+    override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
+        if (boardPopulation.size % 2 != 0) {
+            throw IllegalArgumentException("The cardinality of the selected population must be even")
+        }
+
+        val rowIndexCrossOver = RANDOM.nextInt(boardSize)
+        val population = boardPopulation.toMutableList()
+        val returnBoardCollection = mutableListOf<Board>()
+
+        while (population.isNotEmpty()) {
+            var board1 = population.removeAt(0)
+            var board2 = population.removeAt(0)
+
+            for (i in rowIndexCrossOver until boardSize) {
+                var q1 = board1.queens.single { q -> q.row == i }
+                var q2 = board2.queens.single { q -> q.row == i }
+
+                if (board1.queens.filter { q -> q.col == q2.col }.isEmpty()) {
+                    board1 = board1.withoutQueen(q1).withQueen(q2)
+                }
+                if (board2.queens.filter { q -> q.col == q1.col }.isEmpty()) {
+                    board2 = board2.withoutQueen(q2).withQueen(q1)
+                }
+            }
+
+            returnBoardCollection.add(board1)
+            returnBoardCollection.add(board2)
+        }
+
+        return returnBoardCollection.reversed()
     }
 }
 

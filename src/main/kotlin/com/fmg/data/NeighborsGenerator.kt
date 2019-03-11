@@ -90,7 +90,8 @@ object QueenRemoverNeighborsGenerator : NeighborsGenerator {
 }
 
 /**
- * Pre: in the board there must be present at most one queen per row and the number of queens must be greater or equal of K
+ * Pre: in the board there must be present at most one queen per row and the number of queens must be greater
+ * or equal than K
  *
  * Return all the boards obtainable by moving K queens in a row.
  *
