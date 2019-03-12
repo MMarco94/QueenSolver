@@ -89,7 +89,7 @@ class FactorizerBoardGenerator(
                 try {
                     solver.solve(f)
                 } catch (e: UnableToSolveException) {
-                    fallbackBoardGenerator.generateBoard(size)
+                    fallbackBoardGenerator.generateBoard(f)
                 }
             }
             .reduce { b1, b2 ->

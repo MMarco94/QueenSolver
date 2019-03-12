@@ -55,10 +55,10 @@ object BestSolvers {
     )
 
     val ALL_SOLVERS = mapOf(
-        "Hill Climbing with Approximate Kr0nEcKeR" to APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER,
-        "Hill Climbing with Kr0nEcKeR" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper go on" to BEST_HILL_CLIMBING_SOLVER_GO_ON,
+        "Hill Climbing with Approximate Kr0nEcKeR" to APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER,
+        "Hill Climbing with Kr0nEcKeR" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
