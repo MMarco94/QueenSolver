@@ -40,7 +40,7 @@ object BestSolvers {
 
     private val KRONECKER_BOARD_GENERATOR = FactorizerBoardGenerator(BEST_HILL_CLIMBING_SOLVER)
 
-    private val KRONECKER_APPROXIMATE_BOARD_GENERATOR = FactorizerBoardApproximateGenerator(BEST_HILL_CLIMBING_SOLVER)
+    private val KRONECKER_APPROXIMATE_BOARD_GENERATOR = FactorizerBoardApproximateGenerator(BEST_HILL_CLIMBING_SOLVER_GO_ON)
 
     val KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,

@@ -5,6 +5,7 @@ import com.fmg.RANDOM
 import com.fmg.TrivialFactorizer
 import com.fmg.repeatLastElement
 import com.fmg.solver.Solver
+import com.fmg.solver.UnableToSolveException
 
 interface BoardGenerator {
     fun generateBoard(size: Int): Board
@@ -56,16 +57,19 @@ object OneQueenPerRowAndColumnRandomBoardGenerator : BoardGenerator {
 class FactorizerBoardApproximateGenerator(
     val solver: Solver,
     val factorizer: Factorizer = TrivialFactorizer,
-    val k: Int = 30
+    val k: Int = 30,
+    val fallbackBoardGenerator: BoardGenerator = OneQueenPerRowAndColumnRandomBoardGenerator
 ) : BoardGenerator {
 
     override fun generateBoard(size: Int): Board {
         return factorizer.factorize(size, 4)
             .map { f ->
-                solver.createApproximationSequence(f)
+                solver.createApproximationSequence(f).repeatLastElement(fallbackIfEmpty = {
+                    fallbackBoardGenerator.generateBoard(size)
+                })
             }
             .reduce { s1, s2 ->
-                s1.repeatLastElement().zip(s2.repeatLastElement()) { b1, b2 ->
+                s1.zip(s2) { b1, b2 ->
                     b1 * b2
                 }
             }
@@ -75,13 +79,18 @@ class FactorizerBoardApproximateGenerator(
 
 class FactorizerBoardGenerator(
     val solver: Solver,
-    val factorizer: Factorizer = TrivialFactorizer
+    val factorizer: Factorizer = TrivialFactorizer,
+    val fallbackBoardGenerator: BoardGenerator = OneQueenPerRowAndColumnRandomBoardGenerator
 ) : BoardGenerator {
 
     override fun generateBoard(size: Int): Board {
         return factorizer.factorize(size, 4)
             .map { f ->
-                solver.solve(f)
+                try {
+                    solver.solve(f)
+                } catch (e: UnableToSolveException) {
+                    fallbackBoardGenerator.generateBoard(size)
+                }
             }
             .reduce { b1, b2 ->
                 b1 * b2

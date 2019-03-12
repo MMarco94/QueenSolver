@@ -1,6 +1,5 @@
 package com.fmg
 
-import com.fmg.data.Board
 import com.fmg.data.BoardWithScore
 import com.fmg.data.LocalSearchTerminator
 
@@ -49,7 +48,7 @@ fun <T> Sequence<T>.takeWhileInclusive(predicate: (T) -> Boolean): Sequence<T> {
     }
 }
 
-fun <T> Sequence<T>.repeatLastElement(): Sequence<T> {
+fun <T> Sequence<T>.repeatLastElement(fallbackIfEmpty: () -> T = { throw UnsupportedOperationException("Empty sequence cannot be extended!") }): Sequence<T> {
     val wrapped = this
     return object : Sequence<T> {
 
@@ -62,6 +61,8 @@ fun <T> Sequence<T>.repeatLastElement(): Sequence<T> {
                 override fun next(): T {
                     if (wrappedIterator.hasNext()) {
                         lastElement = wrappedIterator.next()
+                    } else if (lastElement == null) {
+                        lastElement = fallbackIfEmpty()
                     }
                     return lastElement!!
                 }
