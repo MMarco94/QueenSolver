@@ -9,7 +9,7 @@ import com.fmg.solver.*
 import java.util.*
 import kotlin.random.Random
 
-val RANDOM = Random(42)
+val RANDOM = Random(73)
 
 val scanner = Scanner(System.`in`)
 
@@ -35,10 +35,10 @@ val ALL_SOLVERS = mapOf(
         OneQueenPerRowRandomBoardGenerator
     ),
     "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(),
-    "Genetic Algorithm Queens on Different Rows and Columns" to GeneticSolver(
+    "Genetic Algorithm with Queens on Different Rows and Columns" to GeneticSolver(
         IndependentPopulationGenerator(OneQueenPerRowAndColumnRandomBoardGenerator, 1000),
         FitnessSelector(100, TotalConflictEvaluator),
-        SwapRowsCrossOver(),
+        SwapRowsCrossOver,
         SwapRowMutator(0.01)
     )
 )

@@ -14,12 +14,13 @@ class TrivialCrossOver : CrossOver {
     }
 }
 
-class RowQueenCrossOver(val boardSize: Int) : CrossOver {
+object RowQueenCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
             throw IllegalArgumentException("The cardinality of the selected population must be even")
         }
 
+        val boardSize = boardPopulation.first().size
         val rowIndexCrossOver = RANDOM.nextInt(boardSize)
         val population = boardPopulation.toMutableList()
         val returnBoardCollection = mutableListOf<Board>()
@@ -44,12 +45,13 @@ class RowQueenCrossOver(val boardSize: Int) : CrossOver {
     }
 }
 
-class RowQueenWithColumnCheckCrossOver(val boardSize: Int) : CrossOver {
+object RowQueenWithColumnCheckCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
             throw IllegalArgumentException("The cardinality of the selected population must be even")
         }
 
+        val boardSize = boardPopulation.first().size
         val rowIndexCrossOver = RANDOM.nextInt(boardSize)
         val population = boardPopulation.toMutableList()
         val returnBoardCollection = mutableListOf<Board>()
@@ -78,7 +80,7 @@ class RowQueenWithColumnCheckCrossOver(val boardSize: Int) : CrossOver {
     }
 }
 
-class SwapRowsCrossOver() : CrossOver {
+object SwapRowsCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
             throw IllegalArgumentException("The cardinality of the selected population must be even")
