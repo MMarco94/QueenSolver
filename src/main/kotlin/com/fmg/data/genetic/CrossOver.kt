@@ -8,12 +8,6 @@ interface CrossOver {
     fun crossOver(boardPopulation: Collection<Board>): Collection<Board>
 }
 
-class TrivialCrossOver : CrossOver {
-    override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
-        return boardPopulation
-    }
-}
-
 object RowQueenCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
@@ -30,8 +24,8 @@ object RowQueenCrossOver : CrossOver {
             var board2 = population.removeAt(0)
 
             for (i in rowIndexCrossOver until boardSize) {
-                var q1 = board1.queens.single { q -> q.row == i }
-                var q2 = board2.queens.single { q -> q.row == i }
+                val q1 = board1.queens.single { q -> q.row == i }
+                val q2 = board2.queens.single { q -> q.row == i }
 
                 board1 = board1.withoutQueen(q1).withQueen(q2)
                 board2 = board2.withoutQueen(q2).withQueen(q1)
@@ -61,13 +55,13 @@ object RowQueenWithColumnCheckCrossOver : CrossOver {
             var board2 = population.removeAt(0)
 
             for (i in rowIndexCrossOver until boardSize) {
-                var q1 = board1.queens.single { q -> q.row == i }
-                var q2 = board2.queens.single { q -> q.row == i }
+                val q1 = board1.queens.single { q -> q.row == i }
+                val q2 = board2.queens.single { q -> q.row == i }
 
-                if (board1.queens.filter { q -> q.col == q2.col }.isEmpty()) {
+                if (board1.queens.none { q -> q.col == q2.col }) {
                     board1 = board1.withoutQueen(q1).withQueen(q2)
                 }
-                if (board2.queens.filter { q -> q.col == q1.col }.isEmpty()) {
+                if (board2.queens.none { q -> q.col == q1.col }) {
                     board2 = board2.withoutQueen(q2).withQueen(q1)
                 }
             }

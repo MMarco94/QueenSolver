@@ -1,11 +1,10 @@
 package com.fmg
 
-import com.fmg.data.*
-import com.fmg.data.genetic.FitnessSelector
-import com.fmg.data.genetic.IndependentPopulationGenerator
-import com.fmg.data.genetic.SwapRowMutator
-import com.fmg.data.genetic.SwapRowsCrossOver
-import com.fmg.solver.*
+import com.fmg.data.Board
+import com.fmg.data.ConflictEvaluator
+import com.fmg.data.TotalConflictEvaluator
+import com.fmg.solver.BestSolvers.ALL_SOLVERS
+import com.fmg.solver.Solver
 import java.util.*
 import kotlin.random.Random
 
@@ -13,35 +12,6 @@ val RANDOM = Random(73)
 
 val scanner = Scanner(System.`in`)
 
-val ALL_SOLVERS = mapOf(
-    "Hill Climbing log row swapper" to HillClimbingSolver(
-        TotalConflictEvaluator,
-        LogRowSwapperNeighborsGenerator(),
-        OneQueenPerRowAndColumnRandomBoardGenerator
-    ),
-    "Hill Climbing" to HillClimbingSolver(
-        TotalConflictEvaluator,
-        HorizontalQueenMoverNeighborsGenerator,
-        OneQueenPerRowRandomBoardGenerator
-    ),
-    "Hill Climbing with free movement" to HillClimbingSolver(
-        TotalConflictEvaluator,
-        TwoQueenMoverNeighborsGenerator,
-        RandomBoardGenerator
-    ),
-    "Hill Climbing with multiple moves (Blue Tornado)" to HillClimbingSolver(
-        TotalConflictEvaluator,
-        KQueensMoverNeighborsGenerator(3),
-        OneQueenPerRowRandomBoardGenerator
-    ),
-    "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(),
-    "Genetic Algorithm with Queens on Different Rows and Columns" to GeneticSolver(
-        IndependentPopulationGenerator(OneQueenPerRowAndColumnRandomBoardGenerator, 1000),
-        FitnessSelector(100, TotalConflictEvaluator),
-        SwapRowsCrossOver,
-        SwapRowMutator(0.01)
-    )
-)
 
 fun readInt(message: String): Int {
     println(message)
@@ -69,15 +39,8 @@ fun readChoice(options: Collection<String>): Int {
 }
 
 fun chooseSolver(): Solver {
-    val solver = ALL_SOLVERS.values.elementAt(readChoice(ALL_SOLVERS.keys))
-    return if (askForFactorOptimization()) {
-        FactorizerSolver(solver)
-    } else {
-        solver
-    }
+    return ALL_SOLVERS.values.elementAt(readChoice(ALL_SOLVERS.keys))
 }
-
-private fun askForFactorOptimization() = readChoice(listOf("Apply factors optimization", "Compute blindly")) == 0
 
 fun main() {
     val size = readInt("Enter the board size")
@@ -95,16 +58,9 @@ fun main() {
         2 -> {//Benchmark
             val trials = readInt("Enter the number of trials")
             val maxSteps = readInt("Choose a maximum number of steps")
-            val factorOptimize = askForFactorOptimization()
 
 
             for ((name, solver) in ALL_SOLVERS) {
-                val realSolver = if (factorOptimize) {
-                    FactorizerSolver(solver)
-                } else {
-                    solver
-                }
-
                 val correctnessPercentageStat = DoubleSummaryStatistics()
                 val timeStat = DoubleSummaryStatistics()
                 val stepsStat = LongSummaryStatistics()
@@ -112,10 +68,9 @@ fun main() {
                 print("Computing using solver $name")
                 for (i in 0 until trials) {
                     print(".")
-                    val approximationSequence = realSolver.createApproximationSequence(size)
 
                     val (took, ss) = benchmark {
-                        approximationSequence
+                        solver.createApproximationSequence(size)
                             .take(maxSteps)
                             .withIndex()
                             .last()

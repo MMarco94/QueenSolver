@@ -3,23 +3,21 @@ package com.fmg.solver
 import com.fmg.RANDOM
 import com.fmg.allMinBy
 import com.fmg.data.*
-import com.fmg.takeWhileInclusive
+import com.fmg.terminate
 
 class HillClimbingSolver(
     evaluator: BoardEvaluator,
     neighborsGenerator: NeighborsGenerator,
-    boardGenerator: BoardGenerator = RandomBoardGenerator
-) : LocalOptimizationSolver(evaluator, neighborsGenerator, boardGenerator) {
+    boardGenerator: BoardGenerator,
+    localSearchTerminator: LocalSearchTerminator = TerminateComposition(setOf(TerminateWhenSolved, TerminateWhenNotImproving))
+) : LocalOptimizationSolver(evaluator, neighborsGenerator, boardGenerator, localSearchTerminator) {
 
-    override fun createApproximationSequence(size: Int): Sequence<Board> {
-        return generateSequence(boardGenerator.generateBoard(size)) { previousBoard ->
+    override fun createApproximationSequenceWithScore(size: Int): Sequence<BoardWithScore> {
+        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator)) { (previousBoard, _) ->
             neighborsGenerator.generateNeighbors(previousBoard)
-                .allMinBy { board ->
-                    evaluator.evaluate(board)
-                }
+                .map { b -> b.withScore(evaluator) }
+                .allMinBy { (_, weight) -> weight }
                 .random(RANDOM)
-        }.takeWhileInclusive {
-            !it.isNQueenSolution()
-        }
+        }.terminate(localSearchTerminator)
     }
 }

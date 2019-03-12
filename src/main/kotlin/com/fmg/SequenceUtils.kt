@@ -1,5 +1,9 @@
 package com.fmg
 
+import com.fmg.data.Board
+import com.fmg.data.BoardWithScore
+import com.fmg.data.LocalSearchTerminator
+
 fun <T> Sequence<T>.shuffled() = toList().shuffled(RANDOM).asSequence()
 
 /**
@@ -66,3 +70,6 @@ fun <T> Sequence<T>.repeatLastElement(): Sequence<T> {
         }
     }
 }
+
+fun Sequence<BoardWithScore>.terminate(localSearchTerminator: LocalSearchTerminator) =
+    localSearchTerminator.terminate(this)

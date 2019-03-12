@@ -52,8 +52,6 @@ class SwapRowMutator(val probability: Double) : Mutator {
                 if (row != queen.row) {
                     queens = (queens - queen - q + Queen(queen.row, q.col) + Queen(q.row, queen.col)).toMutableList()
                 }
-
-
             }
         }
         board.queens.forEach { q -> board.withQueen(q) }

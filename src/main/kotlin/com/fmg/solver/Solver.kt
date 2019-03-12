@@ -1,9 +1,6 @@
 package com.fmg.solver
 
-import com.fmg.data.Board
-import com.fmg.data.BoardGenerator
-import com.fmg.data.BoardEvaluator
-import com.fmg.data.NeighborsGenerator
+import com.fmg.data.*
 
 abstract class Solver() {
     fun solve(size: Int): Board {
@@ -20,8 +17,12 @@ abstract class Solver() {
 abstract class LocalOptimizationSolver(
     val evaluator: BoardEvaluator,
     val neighborsGenerator: NeighborsGenerator,
-    val boardGenerator: BoardGenerator
+    val boardGenerator: BoardGenerator,
+    val localSearchTerminator: LocalSearchTerminator
 ) : Solver() {
+
+    override fun createApproximationSequence(size: Int) = createApproximationSequenceWithScore(size).map { it.board }
+    abstract fun createApproximationSequenceWithScore(size: Int): Sequence<BoardWithScore>
 
 }
 

@@ -51,17 +51,7 @@ class QueensDisposition private constructor(
     fun numberOfQueensOnAscendingDiagonal(ascendingDiagonalId: Int) = ascendingDiagonals[ascendingDiagonalId]
     fun hasQueensOnAscendingDiagonal(ascendingDiagonalId: Int) = numberOfQueensOnRow(ascendingDiagonalId) > 0
 
-    fun getConflictsCountOnRow(row: Int): Int {
-        val r = numberOfQueensOnRow(row)
-        return r * (r - 1) / 2
-    }
-
     fun rowHasConflicts(row: Int) = numberOfQueensOnRow(row) > 0
-
-    fun getConflictsCountOnColumn(column: Int): Int {
-        val r = numberOfQueensOnColumn(column)
-        return r * (r - 1) / 2
-    }
 
     fun columnHasConflicts(column: Int) = numberOfQueensOnColumn(column) > 0
 

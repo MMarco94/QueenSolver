@@ -50,6 +50,9 @@ class Board private constructor(
         }
     }
 
+    fun withScore(score: Double) = BoardWithScore(this, score)
+    fun withScore(evaluator: BoardEvaluator) = withScore(evaluator.evaluate(this))
+
     companion object {
 
         fun generateAllQueens(size: Int): Sequence<Queen> {
@@ -61,3 +64,5 @@ class Board private constructor(
         }
     }
 }
+
+data class BoardWithScore(val board: Board, val score: Double)
