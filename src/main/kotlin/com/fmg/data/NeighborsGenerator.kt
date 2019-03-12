@@ -108,7 +108,8 @@ class LogRowSwapperNeighborsGenerator(
             .flatMap { q1 ->
                 val firstRow = q1.row
                 val withoutQueen = board.withoutQueen(q1)
-                (firstRow + 1 until board.size).asSequence()//TODO è giusto?
+                (0 until board.size).asSequence()
+                    .filter { secondRow -> firstRow != secondRow }
                     .shuffled()
                     .take(log2(board.size.toDouble()).toInt() + 1)
                     .map { secondRow ->
