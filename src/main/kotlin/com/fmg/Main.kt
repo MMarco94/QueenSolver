@@ -39,7 +39,7 @@ fun getAllSolvers(size: Int) = mapOf(
         OneQueenPerRowRandomBoardGenerator
     ),
     "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
-    "Genetic Algorithm Queens on Different Rows" to GeneticSolver(
+    "Genetic Algorithm Queens on Different Rows and Columns" to GeneticSolver(
         size,
         IndependentPopulationGenerator(size, OneQueenPerRowAndColumnRandomBoardGenerator, 1000),
         FitnessSelector(100, TotalConflictEvaluator),
