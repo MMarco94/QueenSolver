@@ -23,6 +23,16 @@ class Board private constructor(
 
     fun isNQueenSolution() = queens.size == size && !queensDisposition.hasConflicts()
 
+    operator fun times(another: Board): Board {
+        var ret = Board(size * another.size)
+        for (q1 in another.queens) {
+            for (q2 in queens) {
+                ret = ret.withQueen(Queen(q1.row * size + q2.row, q1.col * size + q2.col))
+            }
+        }
+        return ret
+    }
+
     /**
      * This method prints the board
      */

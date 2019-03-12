@@ -1,11 +1,11 @@
 package com.fmg
 
 import com.fmg.data.*
-import com.fmg.data.genetic.*
-import com.fmg.solver.ConstraintPropagationAndBacktrackingSolver
-import com.fmg.solver.GeneticSolver
-import com.fmg.solver.HillClimbingSolver
-import com.fmg.solver.Solver
+import com.fmg.data.genetic.FitnessSelector
+import com.fmg.data.genetic.IndependentPopulationGenerator
+import com.fmg.data.genetic.SwapRowMutator
+import com.fmg.data.genetic.SwapRowsCrossOver
+import com.fmg.solver.*
 import java.util.*
 import kotlin.random.Random
 
@@ -13,38 +13,33 @@ val RANDOM = Random(42)
 
 val scanner = Scanner(System.`in`)
 
-fun getAllSolvers(size: Int) = mapOf(
+val ALL_SOLVERS = mapOf(
     "Hill Climbing log row swapper" to HillClimbingSolver(
-        size,
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator
     ),
     "Hill Climbing" to HillClimbingSolver(
-        size,
         TotalConflictEvaluator,
         HorizontalQueenMoverNeighborsGenerator,
         OneQueenPerRowRandomBoardGenerator
     ),
     "Hill Climbing with free movement" to HillClimbingSolver(
-        size,
         TotalConflictEvaluator,
         TwoQueenMoverNeighborsGenerator,
         RandomBoardGenerator
     ),
     "Hill Climbing with multiple moves (Blue Tornado)" to HillClimbingSolver(
-        size,
         TotalConflictEvaluator,
         KQueensMoverNeighborsGenerator(3),
         OneQueenPerRowRandomBoardGenerator
     ),
-    "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(size),
+    "Constraint propagation" to ConstraintPropagationAndBacktrackingSolver(),
     "Genetic Algorithm Queens on Different Rows and Columns" to GeneticSolver(
-        size,
-        IndependentPopulationGenerator(size, OneQueenPerRowAndColumnRandomBoardGenerator, 1000),
+        IndependentPopulationGenerator(OneQueenPerRowAndColumnRandomBoardGenerator, 1000),
         FitnessSelector(100, TotalConflictEvaluator),
-        SwapRowsCrossOver(size),
-        SwapRowMutator(size, 0.01)
+        SwapRowsCrossOver(),
+        SwapRowMutator(0.01)
     )
 )
 
@@ -73,31 +68,43 @@ fun readChoice(options: Collection<String>): Int {
     }
 }
 
-fun chooseSolver(size: Int): Solver {
-    val allSolvers = getAllSolvers(size)
-    return allSolvers.values.elementAt(readChoice(allSolvers.keys))
+fun chooseSolver(): Solver {
+    val solver = ALL_SOLVERS.values.elementAt(readChoice(ALL_SOLVERS.keys))
+    return if (askForFactorOptimization()) {
+        FactorizerSolver(solver)
+    } else {
+        solver
+    }
 }
+
+private fun askForFactorOptimization() = readChoice(listOf("Apply factors optimization", "Compute blindly")) == 0
 
 fun main() {
     val size = readInt("Enter the board size")
     when (readChoice(listOf("Step by step", "Solve", "Benchmark"))) {
         0 -> {//Step by step
-            printSteps(chooseSolver(size).createApproximationSequence())
+            printSteps(chooseSolver().createApproximationSequence(size))
         }
         1 -> {//Solution
             printSolution(
-                chooseSolver(size)
-                    .createApproximationSequence()
+                chooseSolver()
+                    .createApproximationSequence(size)
                     .take(readInt("Choose a maximum number of steps"))
             )
         }
         2 -> {//Benchmark
             val trials = readInt("Enter the number of trials")
             val maxSteps = readInt("Choose a maximum number of steps")
+            val factorOptimize = askForFactorOptimization()
 
 
+            for ((name, solver) in ALL_SOLVERS) {
+                val realSolver = if (factorOptimize) {
+                    FactorizerSolver(solver)
+                } else {
+                    solver
+                }
 
-            for ((name, solver) in getAllSolvers(size)) {
                 val correctnessPercentageStat = DoubleSummaryStatistics()
                 val timeStat = DoubleSummaryStatistics()
                 val stepsStat = LongSummaryStatistics()
@@ -105,7 +112,7 @@ fun main() {
                 print("Computing using solver $name")
                 for (i in 0 until trials) {
                     print(".")
-                    val approximationSequence = solver.createApproximationSequence()
+                    val approximationSequence = realSolver.createApproximationSequence(size)
 
                     val (took, ss) = benchmark {
                         approximationSequence

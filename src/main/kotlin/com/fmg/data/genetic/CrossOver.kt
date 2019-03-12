@@ -3,9 +3,6 @@ package com.fmg.data.genetic
 import com.fmg.RANDOM
 import com.fmg.data.Board
 import com.fmg.data.Queen
-import com.fmg.solver.UnableToSolveException
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 
 interface CrossOver {
     fun crossOver(boardPopulation: Collection<Board>): Collection<Board>
@@ -81,12 +78,13 @@ class RowQueenWithColumnCheckCrossOver(val boardSize: Int) : CrossOver {
     }
 }
 
-class SwapRowsCrossOver(val boardSize: Int) : CrossOver {
+class SwapRowsCrossOver() : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
             throw IllegalArgumentException("The cardinality of the selected population must be even")
         }
 
+        val boardSize = boardPopulation.first().size
         val rowIndexCrossOver = RANDOM.nextInt(boardSize)
         val population = boardPopulation.toMutableList()
         val returnBoardCollection = mutableListOf<Board>()

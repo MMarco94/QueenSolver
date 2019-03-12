@@ -1,12 +1,14 @@
 package com.fmg
 
+import kotlin.math.sqrt
+
 
 interface Factorizer {
-    fun factorize(n: Int): Sequence<Int>
+    fun factorize(n: Int, min: Int = 2): Sequence<Int>
 }
 
 object TrivialFactorizer : Factorizer {
-    override fun factorize(n: Int): Sequence<Int> {
+    override fun factorize(n: Int, min: Int): Sequence<Int> {
         val factors = ArrayList<Int>()
         var x = n
         var i = 2
@@ -19,7 +21,7 @@ object TrivialFactorizer : Factorizer {
             }
         }
 
-        while (factors[0] == 2 || factors[0] == 3) {
+        while (factors[0] < min) {
             val a = factors[0]
             val b = factors[1]
             factors.removeAt(0)

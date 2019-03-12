@@ -6,13 +6,12 @@ import com.fmg.data.*
 import com.fmg.takeWhileInclusive
 
 class HillClimbingSolver(
-    size: Int,
     evaluator: BoardEvaluator,
     neighborsGenerator: NeighborsGenerator,
     boardGenerator: BoardGenerator = RandomBoardGenerator
-) : LocalOptimizationSolver(size, evaluator, neighborsGenerator, boardGenerator) {
+) : LocalOptimizationSolver(evaluator, neighborsGenerator, boardGenerator) {
 
-    override fun createApproximationSequence(): Sequence<Board> {
+    override fun createApproximationSequence(size: Int): Sequence<Board> {
         return generateSequence(boardGenerator.generateBoard(size)) { previousBoard ->
             neighborsGenerator.generateNeighbors(previousBoard)
                 .allMinBy { board ->

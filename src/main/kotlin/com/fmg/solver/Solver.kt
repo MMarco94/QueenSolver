@@ -5,32 +5,23 @@ import com.fmg.data.BoardGenerator
 import com.fmg.data.BoardEvaluator
 import com.fmg.data.NeighborsGenerator
 
-abstract class Solver(val size: Int) {
-    fun solve(): Board {
-        val solution = createApproximationSequence().lastOrNull()
+abstract class Solver() {
+    fun solve(size: Int): Board {
+        val solution = createApproximationSequence(size).lastOrNull()
         if (solution == null || !solution.isNQueenSolution()) {
             throw UnableToSolveException("No solutions using the solver ${this::class.java.name}")
         }
         return solution
     }
 
-    abstract fun createApproximationSequence(): Sequence<Board>
-}
-
-abstract class GraphSearchSolver(size: Int) : Solver(size) {
-
+    abstract fun createApproximationSequence(size: Int): Sequence<Board>
 }
 
 abstract class LocalOptimizationSolver(
-    size: Int,
     val evaluator: BoardEvaluator,
     val neighborsGenerator: NeighborsGenerator,
     val boardGenerator: BoardGenerator
-) : Solver(size) {
-
-}
-
-abstract class GlobalOptimizationSolver(size: Int) : Solver(size) {
+) : Solver() {
 
 }
 

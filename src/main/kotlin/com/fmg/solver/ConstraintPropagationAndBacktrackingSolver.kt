@@ -7,11 +7,10 @@ import com.fmg.shuffled
 import com.fmg.takeWhileInclusive
 
 class ConstraintPropagationAndBacktrackingSolver(
-    size: Int,
     val neighborsGenerator: NeighborsGenerator = RowByRowNeighborsGenerator
-) : GraphSearchSolver(size) {
+) : Solver() {
 
-    override fun createApproximationSequence() = solve(Board(size))
+    override fun createApproximationSequence(size: Int) = solve(Board(size))
         .takeWhileInclusive {
             !it.isNQueenSolution()
         }

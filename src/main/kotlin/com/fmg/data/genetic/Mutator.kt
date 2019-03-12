@@ -40,15 +40,14 @@ class BasicMutator(val size: Int, val probability: Double) : Mutator {
     }
 }
 
-class SwapRowMutator(val size: Int, val probability: Double) : Mutator {
+class SwapRowMutator(val probability: Double) : Mutator {
     override fun mutate(board: Board): Board {
-        var b = board
         var queens = board.queens.toMutableList()
-        for (i in 0 until size) {
+        for (i in 0 until board.size) {
             val queen = queens[i]
             if (RANDOM.nextDouble() < probability) {
-                val row = RANDOM.nextInt(size)
-                val q = b.queens.single { q -> q.row == row }
+                val row = RANDOM.nextInt(board.size)
+                val q = board.queens.single { q -> q.row == row }
 
                 if (row != queen.row) {
                     queens = (queens - queen - q + Queen(queen.row, q.col) + Queen(q.row, queen.col)).toMutableList()
@@ -57,8 +56,8 @@ class SwapRowMutator(val size: Int, val probability: Double) : Mutator {
 
             }
         }
-        b.queens.forEach { q -> b.withQueen(q) }
-        queens.forEach { q -> b.withQueen(q) }
-        return b
+        board.queens.forEach { q -> board.withQueen(q) }
+        queens.forEach { q -> board.withQueen(q) }
+        return board
     }
 }
