@@ -23,16 +23,17 @@ fun <T, R : Comparable<R>> Sequence<T>.allMinBy(selector: (T) -> R): List<T> {
  * @return a sequence that ends when the given predicate becomes false. The first element that doesn't match the predicate is returned
  */
 fun <T> Sequence<T>.takeWhileInclusive(predicate: (T) -> Boolean): Sequence<T> {
-    val wrapped = this.iterator()
+    val wrapped = this
     return object : Sequence<T> {
-        private var shouldContinue = true
 
         override fun iterator(): Iterator<T> {
+            val wrappedIterator = wrapped.iterator()
             return object : Iterator<T> {
-                override fun hasNext() = shouldContinue && wrapped.hasNext()
+                private var shouldContinue = true
+                override fun hasNext() = shouldContinue && wrappedIterator.hasNext()
 
                 override fun next(): T {
-                    val ret = wrapped.next()
+                    val ret = wrappedIterator.next()
                     if (!predicate(ret)) {
                         shouldContinue = false
                     }
@@ -41,5 +42,27 @@ fun <T> Sequence<T>.takeWhileInclusive(predicate: (T) -> Boolean): Sequence<T> {
             }
         }
 
+    }
+}
+
+fun <T> Sequence<T>.repeatLastElement(): Sequence<T> {
+    val wrapped = this
+    return object : Sequence<T> {
+
+        override fun iterator(): Iterator<T> {
+            val wrappedIterator = wrapped.iterator()
+            return object : Iterator<T> {
+                var lastElement: T? = null
+                override fun hasNext() = true
+
+                override fun next(): T {
+                    if (wrappedIterator.hasNext()) {
+                        lastElement = wrappedIterator.next()
+                    }
+                    return lastElement!!
+                }
+
+            }
+        }
     }
 }

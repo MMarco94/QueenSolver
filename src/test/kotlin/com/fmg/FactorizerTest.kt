@@ -11,6 +11,7 @@ class FactorizerTest {
     }
 
     fun testFactorizer(factorizer: Factorizer) {
+        assertEquals(listOf(4, 8), factorizer.factorize(32, 4).toList())
         assertEquals(listOf(12), factorizer.factorize(12, 4).toList())
         assertEquals(listOf(13), factorizer.factorize(13, 4).toList())
         assertEquals(listOf(4, 6), factorizer.factorize(24, 4).toList())

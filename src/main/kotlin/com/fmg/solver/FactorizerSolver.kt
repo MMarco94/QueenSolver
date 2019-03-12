@@ -3,6 +3,8 @@ package com.fmg.solver
 import com.fmg.Factorizer
 import com.fmg.TrivialFactorizer
 import com.fmg.data.Board
+import com.fmg.repeatLastElement
+import com.fmg.takeWhileInclusive
 
 class FactorizerSolver(
     val solver: Solver,
@@ -15,9 +17,10 @@ class FactorizerSolver(
                 solver.createApproximationSequence(f)
             }
             .reduce { s1, s2 ->
-                s1.zip(s2) { b1, b2 ->
+                s1.repeatLastElement().zip(s2.repeatLastElement()) { b1, b2 ->
                     b1 * b2
                 }
             }
+            .takeWhileInclusive { b -> !b.isNQueenSolution() }
     }
 }
