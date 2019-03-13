@@ -65,4 +65,8 @@ class Board private constructor(
     }
 }
 
-data class BoardWithScore(val board: Board, val score: Double)
+data class BoardWithScore(val board: Board, val score: Double){
+    fun withAnnealing(annealingSteps: Int = 0) = BoardWithScoreAndAnnealing(BoardWithScore(board,score),annealingSteps);
+}
+
+data class BoardWithScoreAndAnnealing (val boardWithScore: BoardWithScore , val stepsFromRennealing: Int = 0)
