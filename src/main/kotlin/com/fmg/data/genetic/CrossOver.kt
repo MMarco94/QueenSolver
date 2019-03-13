@@ -5,7 +5,7 @@ import com.fmg.data.Board
 import com.fmg.data.Queen
 
 interface CrossOver {
-    fun crossOver(boardPopulation: Collection<Board>, populationSize : Int): Collection<Board>
+    fun crossOver(boardPopulation: Collection<Board>, populationSize: Int): Collection<Board>
 }
 
 /*object RowQueenCrossOver : CrossOver {
@@ -100,13 +100,13 @@ object SwapRowsCrossOver : CrossOver {
         val population = boardPopulation.toMutableList()
         val returnBoardCollection = mutableListOf<Board>()
 
-        while(returnBoardCollection.size < populationSize) {
+        while (returnBoardCollection.size < populationSize) {
             var firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
             var secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
             var firstBoard = RANDOM.nextInt(boardPopulation.size)
             var secondBoard = RANDOM.nextInt(boardPopulation.size)
 
-            while(firstRowIndexCrossOver >= secondRowIndexCrossOver) {
+            while (firstRowIndexCrossOver >= secondRowIndexCrossOver) {
                 firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
                 secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
             }
@@ -144,5 +144,3 @@ object SwapRowsCrossOver : CrossOver {
         return returnBoardCollection
     }
 }
-
-

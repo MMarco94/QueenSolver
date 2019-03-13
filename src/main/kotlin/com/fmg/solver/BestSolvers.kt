@@ -45,20 +45,22 @@ object BestSolvers {
     val KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
-        KRONECKER_BOARD_GENERATOR
+        KRONECKER_BOARD_GENERATOR,
+        TerminateWhenSolved//TODO
     )
 
     val APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
-        KRONECKER_APPROXIMATE_BOARD_GENERATOR
+        KRONECKER_APPROXIMATE_BOARD_GENERATOR,
+        TerminateWhenSolved//TODO
     )
 
     val ALL_SOLVERS = mapOf(
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
-        "Simulated annealing" to SIMULATED_ANNELING,
         "Hill Climbing with Approximate Kr0nEcKeR" to APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with Kr0nEcKeR" to KRONECKER_HILL_CLIMBING_SOLVER,
+        "Simulated annealing" to SIMULATED_ANNELING,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
