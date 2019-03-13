@@ -16,15 +16,16 @@ class GeneticSolver(
     fun createPopulationSequence(size: Int): Sequence<Collection<Board>> {
         return generateSequence(populationGenerator.generatePopulation(size)) { population ->
             val selected = selector.select(population)
-            val crossOvered = crossOver.crossOver(selected)
+            val crossOvered = crossOver.crossOver(selected, population.size)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
-            population - selected + mutated
+            mutated
+
         }
     }
 
     override fun createApproximationSequence(size: Int): Sequence<Board> {
         return createPopulationSequence(size)
-            .map { it.firstOrNull { b -> b.isNQueenSolution() } ?: it.last() }
+            .map { it.firstOrNull { b -> b.isNQueenSolution() } ?: it.first() }
             .takeWhileInclusive { !it.isNQueenSolution() }
     }
 }

@@ -2,18 +2,18 @@ package com.fmg.data.genetic
 
 import com.fmg.RANDOM
 import com.fmg.data.Board
-import com.fmg.data.NeighborsGenerator
 import com.fmg.data.Queen
 
 interface Mutator {
-    fun mutate(board: Board): Board
+    //fun mutate(board: Board): Board
+    fun mutate(board: Board, probability: Double = 1 / (board.size.toDouble() * board.size.toDouble())): Board
 }
 
+/*
 class ProbabilisticMutator(
-    val mutator: Mutator,
-    val probability: Double
+    private val mutator: Mutator
 ) : Mutator {
-    override fun mutate(board: Board): Board {
+    override fun mutate(board: Board, probability: Double): Board {
         return if (RANDOM.nextDouble() < probability) {
             mutator.mutate(board)
         } else {
@@ -21,14 +21,18 @@ class ProbabilisticMutator(
         }
     }
 }
+*/
 
-class RandomNeighbourMutator(val neighborsGenerator: NeighborsGenerator) : Mutator {
+/*
+class RandomNeighbourMutator(private val neighborsGenerator: NeighborsGenerator) : Mutator {
     override fun mutate(board: Board): Board {
         return neighborsGenerator.generateNeighbors(board).toList().random(RANDOM)
     }
 }
+*/
 
-class BasicMutator(val size: Int, val probability: Double) : Mutator {
+/*
+class BasicMutator(val size: Int, private val probability: Double) : Mutator {
     override fun mutate(board: Board): Board {
         var b = board
         b.queens.forEach { queen ->
@@ -39,9 +43,10 @@ class BasicMutator(val size: Int, val probability: Double) : Mutator {
         return b
     }
 }
+*/
 
-class SwapRowMutator(val probability: Double) : Mutator {
-    override fun mutate(board: Board): Board {
+object SwapRowMutator : Mutator {
+    override fun mutate(board: Board, probability: Double): Board {
         var queens = board.queens.toMutableList()
         for (i in 0 until board.size) {
             val queen = queens[i]

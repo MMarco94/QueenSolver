@@ -5,25 +5,39 @@ import com.fmg.data.Board
 import com.fmg.data.Queen
 
 interface CrossOver {
-    fun crossOver(boardPopulation: Collection<Board>): Collection<Board>
+    fun crossOver(boardPopulation: Collection<Board>, populationSize : Int): Collection<Board>
 }
 
-object RowQueenCrossOver : CrossOver {
+/*object RowQueenCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
             throw IllegalArgumentException("The cardinality of the selected population must be even")
         }
 
         val boardSize = boardPopulation.first().size
-        val rowIndexCrossOver = RANDOM.nextInt(boardSize)
         val population = boardPopulation.toMutableList()
         val returnBoardCollection = mutableListOf<Board>()
 
-        while (population.isNotEmpty()) {
-            var board1 = population.removeAt(0)
-            var board2 = population.removeAt(0)
+        for (i in 0 until boardPopulation.size) {
+            var firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            var secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            var firstBoard = RANDOM.nextInt(boardPopulation.size)
+            var secondBoard = RANDOM.nextInt(boardPopulation.size)
 
-            for (i in rowIndexCrossOver until boardSize) {
+            while(firstRowIndexCrossOver >= secondRowIndexCrossOver) {
+                firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
+                secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            }
+
+            while (firstBoard == secondBoard) {
+                firstBoard = RANDOM.nextInt(population.size)
+                secondBoard = RANDOM.nextInt(population.size)
+            }
+
+            var board1 = population.get(firstBoard)
+            var board2 = population.get(secondBoard)
+
+            for (i in firstRowIndexCrossOver until secondRowIndexCrossOver) {
                 val q1 = board1.queens.single { q -> q.row == i }
                 val q2 = board2.queens.single { q -> q.row == i }
 
@@ -37,8 +51,9 @@ object RowQueenCrossOver : CrossOver {
 
         return returnBoardCollection
     }
-}
+}*/
 
+/*
 object RowQueenWithColumnCheckCrossOver : CrossOver {
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         if (boardPopulation.size % 2 != 0) {
@@ -73,23 +88,38 @@ object RowQueenWithColumnCheckCrossOver : CrossOver {
         return returnBoardCollection.reversed()
     }
 }
+*/
 
 object SwapRowsCrossOver : CrossOver {
-    override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
-        if (boardPopulation.size % 2 != 0) {
+    override fun crossOver(boardPopulation: Collection<Board>, populationSize: Int): Collection<Board> {
+        if (populationSize % 2 != 0) {
             throw IllegalArgumentException("The cardinality of the selected population must be even")
         }
 
         val boardSize = boardPopulation.first().size
-        val rowIndexCrossOver = RANDOM.nextInt(boardSize)
         val population = boardPopulation.toMutableList()
         val returnBoardCollection = mutableListOf<Board>()
 
-        while (population.isNotEmpty()) {
-            var board1 = population.removeAt(0)
-            var board2 = population.removeAt(0)
+        while(returnBoardCollection.size < populationSize) {
+            var firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            var secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            var firstBoard = RANDOM.nextInt(boardPopulation.size)
+            var secondBoard = RANDOM.nextInt(boardPopulation.size)
 
-            for (i in rowIndexCrossOver until boardSize) {
+            while(firstRowIndexCrossOver >= secondRowIndexCrossOver) {
+                firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
+                secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            }
+
+            while (firstBoard == secondBoard) {
+                firstBoard = RANDOM.nextInt(population.size)
+                secondBoard = RANDOM.nextInt(population.size)
+            }
+
+            var board1 = population[firstBoard]
+            var board2 = population[secondBoard]
+
+            for (i in firstRowIndexCrossOver until secondRowIndexCrossOver) {
                 val q1 = board1.queens.single { q -> q.row == i }
                 val q2 = board2.queens.single { q -> q.col == q1.col }
 
@@ -111,7 +141,7 @@ object SwapRowsCrossOver : CrossOver {
             returnBoardCollection.add(board2)
         }
 
-        return returnBoardCollection.reversed()
+        return returnBoardCollection
     }
 }
 

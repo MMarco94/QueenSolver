@@ -32,10 +32,10 @@ object BestSolvers {
     )
     val CONSTRAINT_PROPAGATION_SOLVER = ConstraintPropagationAndBacktrackingSolver()
     val BEST_GENETIC_SOLVER = GeneticSolver(
-        IndependentPopulationGenerator(OneQueenPerRowAndColumnRandomBoardGenerator, 1000),
-        FitnessSelector(100, TotalConflictEvaluator),
+        IndependentPopulationGenerator(OneQueenPerRowAndColumnRandomBoardGenerator),
+        FitnessSelector(TotalConflictEvaluator),
         SwapRowsCrossOver,
-        SwapRowMutator(0.01)
+        SwapRowMutator
     )
 
     private val KRONECKER_BOARD_GENERATOR = FactorizerBoardGenerator(BEST_HILL_CLIMBING_SOLVER)
