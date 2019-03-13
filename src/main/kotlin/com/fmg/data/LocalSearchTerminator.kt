@@ -24,28 +24,3 @@ object TerminateWhenNotImproving : LocalSearchTerminator {
             .map { it.first!! }
     }
 }
-
-class TerminateComposition(val terminators: Set<LocalSearchTerminator>) : LocalSearchTerminator {
-    override fun terminate(boardSequence: Sequence<BoardWithScore>): Sequence<BoardWithScore> {
-        var retSequence = boardSequence
-        for (t in terminators) {
-            retSequence = t.terminate(retSequence)
-        }
-        return retSequence
-    }
-
-}
-
-fun main() {
-    val b = Board(10)
-    sequenceOf(
-        b.withScore(10.0),
-        b.withScore(9.0),
-        b.withScore(8.0),
-        b.withScore(7.0),
-        b.withScore(7.0)
-    ).terminate(TerminateWhenNotImproving)
-        .forEach { (_, score) ->
-            println("Score $score")
-        }
-}

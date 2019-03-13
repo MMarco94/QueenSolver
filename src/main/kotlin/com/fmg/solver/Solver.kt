@@ -14,11 +14,10 @@ abstract class Solver() {
     abstract fun createApproximationSequence(size: Int): Sequence<Board>
 }
 
-abstract class LocalOptimizationSolver(
+abstract class OptimizationSolver(
     val evaluator: BoardEvaluator,
     val neighborsGenerator: NeighborsGenerator,
-    val boardGenerator: BoardGenerator,
-    val localSearchTerminator: LocalSearchTerminator
+    val boardGenerator: BoardGenerator
 ) : Solver() {
 
     override fun createApproximationSequence(size: Int) = createApproximationSequenceWithScore(size).map { it.board }
