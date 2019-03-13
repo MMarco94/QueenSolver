@@ -14,11 +14,10 @@ object BestSolvers {
         LogRowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator
     )
-    val BEST_HILL_CLIMBING_SOLVER_GO_ON = HillClimbingSolver(
+    val SIMULATED_ANNELING = SimulatedAnnealingSolver(
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
-        OneQueenPerRowAndColumnRandomBoardGenerator,
-        TerminateWhenSolved
+        OneQueenPerRowAndColumnRandomBoardGenerator
     )
     val SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
@@ -40,7 +39,7 @@ object BestSolvers {
 
     private val KRONECKER_BOARD_GENERATOR = FactorizerBoardGenerator(BEST_HILL_CLIMBING_SOLVER)
 
-    private val KRONECKER_APPROXIMATE_BOARD_GENERATOR = FactorizerBoardApproximateGenerator(BEST_HILL_CLIMBING_SOLVER_GO_ON)
+    private val KRONECKER_APPROXIMATE_BOARD_GENERATOR = FactorizerBoardApproximateGenerator(BEST_HILL_CLIMBING_SOLVER)
 
     val KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
@@ -51,15 +50,14 @@ object BestSolvers {
     val APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
-        KRONECKER_APPROXIMATE_BOARD_GENERATOR,
-        TerminateWhenSolved
+        KRONECKER_APPROXIMATE_BOARD_GENERATOR
     )
 
     val ALL_SOLVERS = mapOf(
-        "Hill Climbing with Approximate Kr0nEcKeR go on" to APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER,
+        "Simulated annealing" to SIMULATED_ANNELING,
+        "Hill Climbing with Approximate Kr0nEcKeR" to APPROXIMATE_KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with Kr0nEcKeR" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
-        "Hill Climbing log row swapper go on" to BEST_HILL_CLIMBING_SOLVER_GO_ON,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,

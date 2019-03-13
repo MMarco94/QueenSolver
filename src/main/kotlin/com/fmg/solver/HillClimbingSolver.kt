@@ -11,7 +11,7 @@ class HillClimbingSolver(
     boardGenerator: BoardGenerator,
     val localSearchTerminator: LocalSearchTerminator = TerminateWhenNotImproving
 ) : OptimizationSolver(evaluator, neighborsGenerator, boardGenerator) {
-    
+
     override fun createApproximationSequenceWithScore(size: Int): Sequence<BoardWithScore> {
         return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator)) { boardWithScore ->
             neighborsGenerator.generateNeighbors(boardWithScore.board)

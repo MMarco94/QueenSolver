@@ -74,3 +74,8 @@ fun <T> Sequence<T>.repeatLastElement(fallbackIfEmpty: () -> T = { throw Unsuppo
 
 fun Sequence<BoardWithScore>.terminate(localSearchTerminator: LocalSearchTerminator) =
     localSearchTerminator.terminate(this)
+
+fun <T : Any> Sequence<T>.extractWithRepetitions(): Sequence<T> {
+    val toList = this.toList()
+    return generateSequence { toList[RANDOM.nextInt(toList.size)] }
+}
