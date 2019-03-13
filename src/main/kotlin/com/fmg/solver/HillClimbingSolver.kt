@@ -13,10 +13,10 @@ class HillClimbingSolver(
 ) : LocalOptimizationSolver(evaluator, neighborsGenerator, boardGenerator, localSearchTerminator) {
 
     override fun createApproximationSequenceWithScore(size: Int): Sequence<BoardWithScore> {
-        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator)) { (previousBoard, _) ->
+        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator)) { (previousBoard) ->
             neighborsGenerator.generateNeighbors(previousBoard)
                 .map { b -> b.withScore(evaluator) }
-                .allMinBy { (_, weight) -> weight }
+                .allMinBy { board -> board.score }
                 .random(RANDOM)
         }.terminate(localSearchTerminator)
     }
