@@ -1,6 +1,6 @@
 package com.fmg.data
 
-import com.fmg.shuffled
+import com.fmg.takeWithProbability
 import kotlin.math.log2
 
 interface NeighborsGenerator {
@@ -102,18 +102,16 @@ class LogRowSwapperNeighborsGenerator(
     val queenEvaluator: QueenEvaluator = TotalQueenConflictEvaluator
 ) : NeighborsGenerator {
     override fun generateNeighbors(board: Board): Sequence<Board> {
-        return board.queens.asSequence()
+        return board.queens
             .sortedByDescending { q -> queenEvaluator.evaluate(q, board) }
+            .asSequence()
             .take(log2(board.size.toDouble()).toInt() + 1)
             .flatMap { q1 ->
-                val firstRow = q1.row
                 val withoutQueen = board.withoutQueen(q1)
-                (0 until board.size).asSequence()
-                    .filter { secondRow -> firstRow != secondRow }
-                    .shuffled()
-                    .take(log2(board.size.toDouble()).toInt() + 1)
-                    .map { secondRow ->
-                        val q2 = board.queens.single { q -> q.row == secondRow }
+                board.queens.asSequence()
+                    .filter { q2 -> q1 != q2 }
+                    .takeWithProbability((log2(board.size.toDouble()).toInt() + 1.0) / board.size)
+                    .map { q2 ->
                         withoutQueen
                             .withoutQueen(q2)
                             .withQueen(Queen(q1.row, q2.col))

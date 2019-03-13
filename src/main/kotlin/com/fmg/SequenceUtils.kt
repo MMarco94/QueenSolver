@@ -79,3 +79,11 @@ fun <T : Any> Sequence<T>.extractWithRepetitions(): Sequence<T> {
     val toList = this.toList()
     return generateSequence { toList[RANDOM.nextInt(toList.size)] }
 }
+
+fun <T : Any> Sequence<T>.takeWithProbability(probability: Double): Sequence<T> {
+    return takeWithProbability { _ -> probability }
+}
+
+fun <T : Any> Sequence<T>.takeWithProbability(probability: (T) -> Double): Sequence<T> {
+    return this.filter { RANDOM.nextDouble() < probability(it) }
+}
