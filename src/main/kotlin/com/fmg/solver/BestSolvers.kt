@@ -1,10 +1,7 @@
 package com.fmg.solver
 
 import com.fmg.data.*
-import com.fmg.data.genetic.FitnessSelector
-import com.fmg.data.genetic.IndependentPopulationGenerator
-import com.fmg.data.genetic.SwapRowMutator
-import com.fmg.data.genetic.SwapRowsCrossOver
+import com.fmg.data.genetic.*
 
 object BestSolvers {
 
@@ -31,11 +28,19 @@ object BestSolvers {
         OneQueenPerRowRandomBoardGenerator
     )
     val CONSTRAINT_PROPAGATION_SOLVER = ConstraintPropagationAndBacktrackingSolver()
+
     val BEST_GENETIC_SOLVER = GeneticSolver(
-        IndependentPopulationGenerator(OneQueenPerRowAndColumnRandomBoardGenerator),
-        FitnessSelector(TotalConflictEvaluator),
+        IndependentPopulationGenerator(),
+        FitnessSelector(),
         SwapRowsCrossOver,
         SwapRowMutator
+    )
+
+    val MARANGA_GENETIC_SOLVER = GeneticSolver(
+        IndependentPopulationGenerator(OneQueenPerRowRandomBoardGenerator),
+        FitnessSelector(),
+        CompletelyRandomCrossover,
+        BasicMutator(16)
     )
 
     private val KRONECKER_BOARD_GENERATOR = FactorizerBoardGenerator(BEST_HILL_CLIMBING_SOLVER)
@@ -54,6 +59,7 @@ object BestSolvers {
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Columns" to BEST_GENETIC_SOLVER
+        "Genetic Algorithm with Queens on Different Rows and Columns" to BEST_GENETIC_SOLVER,
+        "Genetic Algorithm of Maranga" to MARANGA_GENETIC_SOLVER
     )
 }

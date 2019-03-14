@@ -120,6 +120,7 @@ private fun printSolution(approximationSequence: Sequence<Board>) {
         println("Solution in $steps steps:")
     } else {
         println("Best approximation after $steps steps:")
+        println("Number of conflicts: " + TotalConflictEvaluator.evaluate(solution))
     }
     solution.print()
     println("Took ${took * 1000} ms")

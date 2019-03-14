@@ -1,6 +1,7 @@
 package com.fmg.solver
 
 import com.fmg.data.Board
+import com.fmg.data.TotalConflictEvaluator
 import com.fmg.data.genetic.CrossOver
 import com.fmg.data.genetic.Mutator
 import com.fmg.data.genetic.PopulationGenerator
@@ -16,10 +17,17 @@ class GeneticSolver(
     fun createPopulationSequence(size: Int): Sequence<Collection<Board>> {
         return generateSequence(populationGenerator.generatePopulation(size)) { population ->
             val selected = selector.select(population)
-            val crossOvered = crossOver.crossOver(selected, population.size)
+            val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
-            mutated
+            /*val np = selector.select((population + mutated), population.size)
 
+            var sum : Double = 0.0
+            for (i in np) {
+                sum += TotalConflictEvaluator.evaluate(i)
+            }
+            println(sum / np.size)*/
+
+            selector.select((population + mutated), population.size)
         }
     }
 

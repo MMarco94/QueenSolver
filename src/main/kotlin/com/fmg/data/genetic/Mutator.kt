@@ -31,9 +31,9 @@ class RandomNeighbourMutator(private val neighborsGenerator: NeighborsGenerator)
 }
 */
 
-/*
-class BasicMutator(val size: Int, private val probability: Double) : Mutator {
-    override fun mutate(board: Board): Board {
+
+class BasicMutator(val size: Int) : Mutator {
+    override fun mutate(board: Board, probability: Double): Board {
         var b = board
         b.queens.forEach { queen ->
             if (RANDOM.nextDouble() < probability) {
@@ -43,7 +43,7 @@ class BasicMutator(val size: Int, private val probability: Double) : Mutator {
         return b
     }
 }
-*/
+
 
 object SwapRowMutator : Mutator {
     override fun mutate(board: Board, probability: Double): Board {
