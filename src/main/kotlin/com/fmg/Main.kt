@@ -44,6 +44,7 @@ fun chooseSolver(): Solver {
 
 fun main() {
     val size = readInt("Enter the board size")
+    println("Factors = " + TrivialFactorizer.factorize(size, 4).toList().sorted())
     when (readChoice(listOf("Step by step", "Solve", "Benchmark"))) {
         0 -> {//Step by step
             printSteps(chooseSolver().createApproximationSequence(size))

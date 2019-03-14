@@ -2,6 +2,8 @@ package com.fmg
 
 import com.fmg.data.BoardWithScore
 import com.fmg.data.LocalSearchTerminator
+import java.util.Collections.swap
+import kotlin.math.min
 
 fun <T> Sequence<T>.shuffled() = toList().shuffled(RANDOM).asSequence()
 
@@ -86,4 +88,54 @@ fun <T : Any> Sequence<T>.takeWithProbability(probability: Double): Sequence<T> 
 
 fun <T : Any> Sequence<T>.takeWithProbability(probability: (T) -> Double): Sequence<T> {
     return this.filter { RANDOM.nextDouble() < probability(it) }
+}
+
+fun <T, R : Comparable<R>> Iterable<T>.getMinKBy(k: Int, value: (T) -> R): MutableList<T> {
+    val list = toMutableList()
+    val realK = min(k, list.size)
+    minK(list, realK, Comparator.comparing<T, R> { value(it) }, 0, list.size - 1)
+    return list.subList(0, realK)
+}
+
+fun <T> Iterable<T>.getMinKWith(k: Int, comparator: Comparator<T>): MutableList<T> {
+    val list = toMutableList()
+    val realK = min(k, list.size)
+    minK(list, realK, comparator, 0, list.size - 1)
+    return list.subList(0, realK)
+}
+
+private fun <T> minK(list: MutableList<T>, k: Int, comparator: Comparator<T>, start: Int, end: Int) {
+    if (start < end) {
+        val pivotIndex = RANDOM.nextInt(start, end)
+        swap(list, pivotIndex, start)
+
+        val pivot = list[start]
+        var lower = start
+        var upper = end
+
+        var i = start
+        while (i <= upper) {
+            val value = list[i]
+            val cmp = comparator.compare(value, pivot)
+            when {
+                cmp < 0 -> {
+                    swap(list, lower, i)
+                    lower++
+                    i++
+                }
+                cmp > 0 -> {
+                    swap(list, upper, i)
+                    upper--
+                }
+                else -> i++
+            }
+        }
+
+        if (lower > k) {
+            minK(list, k, comparator, start, lower - 1)
+        }
+        if (upper < k) {
+            minK(list, k, comparator, upper + 1, end)
+        }
+    }
 }

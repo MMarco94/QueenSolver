@@ -7,7 +7,8 @@ class Board private constructor(
     val size: Int,
     val queensDisposition: QueensDisposition
 ) {
-    val queens: Set<Queen> = queensDisposition.queens
+    val queens: Set<Queen>
+        get() = queensDisposition.queens
 
     constructor(size: Int) : this(size, QueensDisposition(size))
 
@@ -21,16 +22,19 @@ class Board private constructor(
      */
     fun withoutQueen(queen: Queen) = Board(size, queensDisposition.withoutQueen(queen))
 
+    fun with(
+        toAddQueens: Array<Queen> = emptyArray(),
+        toRemoveQueens: Array<Queen> = emptyArray()
+    ) = Board(size, queensDisposition.with(toAddQueens, toRemoveQueens))
+
     fun isNQueenSolution() = queens.size == size && !queensDisposition.hasConflicts()
 
     operator fun times(another: Board): Board {
-        var ret = Board(size * another.size)
-        for (q1 in another.queens) {
-            for (q2 in queens) {
-                ret = ret.withQueen(Queen(q1.row * size + q2.row, q1.col * size + q2.col))
+        return Board(size * another.size).with(toAddQueens = another.queens.flatMap { q1 ->
+            queens.map { q2 ->
+                Queen(q1.row * size + q2.row, q1.col * size + q2.col)
             }
-        }
-        return ret
+        }.toTypedArray())
     }
 
     /**
@@ -65,8 +69,9 @@ class Board private constructor(
     }
 }
 
-data class BoardWithScore(val board: Board, val score: Double){
-    fun withAnnealing(annealingSteps: Int = 0) = BoardWithScoreAndAnnealing(BoardWithScore(board,score),annealingSteps);
+data class BoardWithScore(val board: Board, val score: Double) {
+    fun withAnnealing(annealingSteps: Int = 0) =
+        BoardWithScoreAndAnnealing(BoardWithScore(board, score), annealingSteps);
 }
 
-data class BoardWithScoreAndAnnealing (val boardWithScore: BoardWithScore , val stepsFromRennealing: Int = 0)
+data class BoardWithScoreAndAnnealing(val boardWithScore: BoardWithScore, val stepsFromRennealing: Int = 0)

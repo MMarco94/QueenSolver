@@ -56,7 +56,7 @@ object OneQueenPerRowAndColumnRandomBoardGenerator : BoardGenerator {
 class FactorizerBoardApproximateGenerator(
     val solver: Solver,
     val factorizer: Factorizer = TrivialFactorizer,
-    val k: Int = 30,
+    val k: Int = 50,
     val fallbackBoardGenerator: BoardGenerator = OneQueenPerRowAndColumnRandomBoardGenerator
 ) : BoardGenerator {
 
