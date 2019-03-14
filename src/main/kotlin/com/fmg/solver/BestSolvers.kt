@@ -33,14 +33,8 @@ object BestSolvers {
         IndependentPopulationGenerator(),
         FitnessSelector(),
         SwapRowsCrossOver,
-        SwapRowMutator
-    )
-
-    val MARANGA_GENETIC_SOLVER = GeneticSolver(
-        IndependentPopulationGenerator(OneQueenPerRowRandomBoardGenerator),
-        FitnessSelector(),
-        CompletelyRandomCrossover,
-        BasicMutator(16)
+        SwapRowMutator,
+        LambdaMuReplacer()
     )
 
     private val KRONECKER_BOARD_GENERATOR = FactorizerBoardGenerator(BEST_HILL_CLIMBING_SOLVER)
@@ -59,7 +53,6 @@ object BestSolvers {
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Columns" to BEST_GENETIC_SOLVER,
-        "Genetic Algorithm of Maranga" to MARANGA_GENETIC_SOLVER
+        "Genetic Algorithm with Queens on Different Rows and Columns" to BEST_GENETIC_SOLVER
     )
 }
