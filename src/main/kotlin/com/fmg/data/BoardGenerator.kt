@@ -53,38 +53,19 @@ object OneQueenPerRowAndColumnRandomBoardGenerator : BoardGenerator {
     }
 }
 
-class FactorizerBoardApproximateGenerator(
-    val solver: Solver,
-    val factorizer: Factorizer = TrivialFactorizer,
-    val k: Int = 50,
-    val fallbackBoardGenerator: BoardGenerator = OneQueenPerRowAndColumnRandomBoardGenerator
-) : BoardGenerator {
-
-    override fun generateBoard(size: Int): Board {
-        return factorizer.factorize(size, 4)
-            .map { f ->
-                solver.createApproximationSequence(f).repeatLastElement(fallbackIfEmpty = {
-                    fallbackBoardGenerator.generateBoard(size)
-                })
-            }
-            .reduce { s1, s2 ->
-                s1.zip(s2) { b1, b2 ->
-                    b1 * b2
-                }
-            }
-            .elementAt(k)
-    }
-}
-
 class FactorizerBoardGenerator(
     val solver: Solver,
-    val factorizer: Factorizer = TrivialFactorizer
+    val factorizer: Factorizer = TrivialFactorizer,
+    val limit: Int = 1000
 ) : BoardGenerator {
 
     override fun generateBoard(size: Int): Board {
         return factorizer.factorize(size, 4)
             .map { f ->
-                solver.createApproximationSequence(f).last()
+                solver
+                    .createApproximationSequence(f)
+                    .take(limit)
+                    .last()
             }
             .reduce { b1, b2 ->
                 b1 * b2
