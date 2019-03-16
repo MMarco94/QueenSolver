@@ -6,7 +6,7 @@ interface Replacer {
     fun replace(bigPopulation : Collection<Board>, populationSize : Int) : Collection<Board>
 }
 
-class LambdaMuReplacer(private val selector: Selector = FitnessSelector()) : Replacer {
+class LambdaMuReplacer(private val selector: Selector = StaticFitnessSelector()) : Replacer {
     override fun replace(bigPopulation: Collection<Board>, populationSize: Int): Collection<Board> {
         return selector.select(bigPopulation, populationSize)
     }

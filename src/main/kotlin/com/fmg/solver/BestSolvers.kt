@@ -31,7 +31,15 @@ object BestSolvers {
 
     val BEST_GENETIC_SOLVER = GeneticSolver(
         IndependentPopulationGenerator(),
-        FitnessSelector(),
+        StaticFitnessSelector(),
+        SwapRowsCrossOver,
+        SwapRowMutator,
+        LambdaMuReplacer()
+    )
+
+    val ROULETTE_WHEEL_GENETIC_SOLVER = GeneticSolver(
+        IndependentPopulationGenerator(),
+        RouletteWheelSelector(),
         SwapRowsCrossOver,
         SwapRowMutator,
         LambdaMuReplacer()
@@ -53,6 +61,7 @@ object BestSolvers {
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Columns" to BEST_GENETIC_SOLVER
+        "Genetic Algorithm with Queens on Different Rows and Columns with static selection" to BEST_GENETIC_SOLVER,
+        "Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER
     )
 }
