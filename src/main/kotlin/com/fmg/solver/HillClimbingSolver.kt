@@ -3,6 +3,7 @@ package com.fmg.solver
 import com.fmg.RANDOM
 import com.fmg.allMinBy
 import com.fmg.data.*
+import com.fmg.randomOrNull
 import com.fmg.terminate
 
 class HillClimbingSolver(
@@ -13,11 +14,12 @@ class HillClimbingSolver(
 ) : OptimizationSolver(evaluator, neighborsGenerator, boardGenerator) {
 
     override fun createApproximationSequenceWithScore(size: Int): Sequence<BoardWithScore> {
-        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator)) { boardWithScore ->
-            neighborsGenerator.generateNeighbors(boardWithScore.board)
+        val initialBoard = boardGenerator.generateBoard(size).withScore(evaluator)
+        return generateSequence(initialBoard) { previousBoard ->
+            neighborsGenerator.generateNeighbors(previousBoard.board)
                 .map { b -> b.withScore(evaluator) }
                 .allMinBy { board -> board.score }
-                .random(RANDOM)
+                .randomOrNull()//Choosing one random neighbor that minimizes the evaluator
         }.terminate(localSearchTerminator)
     }
 }

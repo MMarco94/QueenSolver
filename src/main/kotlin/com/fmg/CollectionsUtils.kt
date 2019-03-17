@@ -139,3 +139,8 @@ private fun <T> minK(list: MutableList<T>, k: Int, comparator: Comparator<T>, st
         }
     }
 }
+
+fun <T> Collection<T>.randomOrNull(): T? {
+    return if (isEmpty()) null
+    else random(RANDOM)
+}

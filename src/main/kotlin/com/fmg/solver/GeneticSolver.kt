@@ -13,7 +13,8 @@ class GeneticSolver(
     val repalcer: Replacer
 ) : Solver() {
     fun createPopulationSequence(size: Int): Sequence<Collection<Board>> {
-        return generateSequence(populationGenerator.generatePopulation(size)) { population ->
+        val initialPopulation = populationGenerator.generatePopulation(size)
+        return generateSequence(initialPopulation) { population ->
             val selected = selector.select(population)
             val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
