@@ -97,6 +97,7 @@ private fun doBenchmark() {
         val correctnessPercentageStat = DoubleSummaryStatistics()
         val timeStat = DoubleSummaryStatistics()
         val stepsStat = LongSummaryStatistics()
+        val conflictsStat = DoubleSummaryStatistics()
 
         print("Computing using solver $name")
         for (i in 0 until trials) {
@@ -113,10 +114,12 @@ private fun doBenchmark() {
             timeStat.accept(took)
             stepsStat.accept(steps + 1)
             correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
+            conflictsStat.accept(TotalConflictEvaluator.evaluate(solution))
         }
         println()
         println("Time statistics of $name: $timeStat")
         println("Steps statistics of $name: $stepsStat")
+        println("Conflicts of $name: $conflictsStat")
         println("Correctness probability of $name: ${correctnessPercentageStat.average * 100}%")
         println()
         println()
