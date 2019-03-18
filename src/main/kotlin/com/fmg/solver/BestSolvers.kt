@@ -12,9 +12,16 @@ object BestSolvers {
         OneQueenPerRowAndColumnRandomBoardGenerator,
         TerminateWhenSolved//TODO
     )
-    val SIMULATED_ANNELING = SimulatedAnnealingSolver(
+
+    val TABU_SEARCH_SOLVER = TabuSerachSolver(
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
+        OneQueenPerRowAndColumnRandomBoardGenerator,
+        TerminateWhenSolved//TODO
+    )
+    val SIMULATED_ANNELING = SimulatedAnnealingSolver(
+        TotalConflictEvaluator,
+        SimulatedAnnealingNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator
     )
     val SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
