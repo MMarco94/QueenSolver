@@ -2,12 +2,9 @@ package com.fmg.solver
 
 import com.fmg.RANDOM
 import com.fmg.data.*
-import com.fmg.shuffled
 import com.fmg.takeWhileInclusive
-import com.fmg.takeWithProbability
 import kotlin.math.exp
 import kotlin.math.log10
-import kotlin.math.sqrt
 
 class SimulatedAnnealingSolver(
     evaluator: BoardEvaluator,
@@ -22,18 +19,18 @@ class SimulatedAnnealingSolver(
 
     private fun solve(size: Int, tZero: Double): Sequence<BoardWithScoreAndAnnealing> {
         return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator).withAnnealing()) { prevBoard ->
-            val neighbors = neighborsGenerator.generateNeighbors(prevBoard.boardWithScore.board)
-                .map { b -> b.withScore(evaluator) }
-                //.sortedBy { it.score }
+            neighborsGenerator.generateNeighbors(prevBoard.boardWithScore.board)
 
-            (neighbors
-                .takeWithProbability { boardWithScore -> exp(-(boardWithScore.score/ size.toDouble())) }
+                .map { b -> b.withScore(evaluator) }
                 .sortedBy { it.score }
-                .firstOrNull()?:neighbors.toList().random())
+                .take(100)
+
+                .toList()
+                .random()
                 .let { currentBoard ->
                     val deltaScore = prevBoard.boardWithScore.score - currentBoard.score
-                    val prob = acceptanceProb(deltaScore, tZero, prevBoard.stepsFromRennealing.toDouble())
-                    if (RANDOM.nextDouble() < prob)
+                    val prob =  acceptanceProb(deltaScore,tZero, prevBoard.stepsFromRennealing.toDouble())
+                    if (RANDOM.nextDouble() < prob )
                         currentBoard.withAnnealing(prevBoard.stepsFromRennealing + 1)
                     else
                         prevBoard.boardWithScore.withAnnealing()
@@ -43,14 +40,17 @@ class SimulatedAnnealingSolver(
 
 
     private fun acceptanceProb(deltaScore: Double, tZero: Double, k: Double): Double {
-        if (deltaScore >= 0)
+        if ( deltaScore >= 0)
             return 1.0
         else
-            return exp(deltaScore * 50 / temperature(tZero, k))
+            return exp(deltaScore * 50 / temperature(tZero,k) )
     }
 
-    private fun temperature(tZero: Double, k: Double): Double {
+    private fun temperature (tZero: Double, k : Double): Double{
         return tZero / log10(k)
     }
-    
+
+    private fun reannilingProbability2(deltaScore: Double, prevScore: Double): Double {
+        return exp(-(deltaScore) / prevScore) * 0.0001
+    }
 }
