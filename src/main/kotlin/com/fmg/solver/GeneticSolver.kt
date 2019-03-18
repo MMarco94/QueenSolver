@@ -1,25 +1,24 @@
 package com.fmg.solver
 
 import com.fmg.data.Board
-import com.fmg.data.genetic.CrossOver
-import com.fmg.data.genetic.Mutator
-import com.fmg.data.genetic.PopulationGenerator
-import com.fmg.data.genetic.Selector
+import com.fmg.data.TotalConflictEvaluator
+import com.fmg.data.genetic.*
 import com.fmg.takeWhileInclusive
 
 class GeneticSolver(
-    val populationGenerator: PopulationGenerator,
-    val selector: Selector,
-    val crossOver: CrossOver,
-    val mutator: Mutator
+    private val populationGenerator: PopulationGenerator,
+    private val selector: Selector,
+    private val crossOver: CrossOver,
+    private val mutator: Mutator,
+    val repalcer: Replacer
 ) : Solver() {
     fun createPopulationSequence(size: Int): Sequence<Collection<Board>> {
-        return generateSequence(populationGenerator.generatePopulation(size)) { population ->
+        val initialPopulation = populationGenerator.generatePopulation(size)
+        return generateSequence(initialPopulation) { population ->
             val selected = selector.select(population)
-            val crossOvered = crossOver.crossOver(selected, population.size)
+            val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
-            mutated
-
+            repalcer.replace(population + mutated, population.size)
         }
     }
 

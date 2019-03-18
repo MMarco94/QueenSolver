@@ -12,15 +12,41 @@ class FastQueenSet private constructor(
 
     override fun iterator() = queens.iterator()
 
+    /**
+     * Adds and removes queens at the same time
+     *
+     * @param toAddQueens the queens to add. They must be new queens
+     * @param toRemoveQueens the queens to remove. They must be in this set
+     */
+    fun with(
+        toAddQueens: Array<Queen> = emptyArray(),
+        toRemoveQueens: Array<Queen> = emptyArray()
+    ): FastQueenSet {
+        return if (queens.isEmpty() && toRemoveQueens.isEmpty()) {
+            FastQueenSet(toAddQueens.sortedArray())
+        } else {
+            var ret = this
+            for (queen in toAddQueens) {
+                ret = ret.withQueen(queen)
+            }
+            for (queen in toRemoveQueens) {
+                ret = ret.withoutQueen(queen)
+            }
+            ret
+        }
+    }
+
     fun withQueen(queen: Queen): FastQueenSet {
         val insertionPoint = -queens.binarySearch(queen) - 1
         if (insertionPoint < 0) throw IllegalArgumentException("Queen already present")
 
         val newQueens = queens.copyOf(queens.size + 1)
         newQueens[insertionPoint] = queen
-        for (i in insertionPoint + 1 until newQueens.size) {
-            newQueens[i] = queens[i - 1]
-        }
+        System.arraycopy(
+            queens, insertionPoint,
+            newQueens, insertionPoint + 1,
+            queens.size - insertionPoint
+        )
 
         @Suppress("UNCHECKED_CAST")
         return FastQueenSet(newQueens as Array<Queen>)

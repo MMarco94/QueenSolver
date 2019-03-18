@@ -4,7 +4,7 @@ package com.fmg.data
  * A class that holds queens. It also keeps statistics about the dispositions of the queens on the board, to make most operations O(1)
  */
 class QueensDisposition private constructor(
-    val queens: FastQueenSet,
+    val queensObtainer: () -> FastQueenSet,
     private val rows: IntArray,//Row => Number of queens of that row
     private val columns: IntArray,
     private val descendingDiagonals: IntArray,
@@ -12,8 +12,12 @@ class QueensDisposition private constructor(
     val conflictsCount: Int
 ) {
 
+    val queens: FastQueenSet by lazy {
+        queensObtainer()
+    }
+
     constructor(maxBoardSize: Int) : this(
-        FastQueenSet(),
+        { FastQueenSet() },
         IntArray(maxBoardSize),
         IntArray(maxBoardSize),
         IntArray(maxBoardSize * 2 + 1),
@@ -31,9 +35,7 @@ class QueensDisposition private constructor(
         ret += numberOfQueensOnColumn(queen.col)
         ret += numberOfQueensOnDescendingDiagonal(queen.descendingDiagonalId)
         ret += numberOfQueensOnAscendingDiagonal(queen.ascendingDiagonalId)
-        if (queen in queens) {
-            ret -= 4
-        }
+        ret -= 4 * queens.size
         return ret
     }
 
@@ -56,54 +58,56 @@ class QueensDisposition private constructor(
     fun columnHasConflicts(column: Int) = numberOfQueensOnColumn(column) > 0
 
     fun withQueen(queen: Queen): QueensDisposition {
-        return if (queen in queens) {
-            this //This disposition already contains the given queen
-        } else {
-            QueensDisposition(
-                queens.withQueen(queen),
-                rows.copyOf().also { m ->
-                    m[queen.row]++
-                },
-                columns.copyOf().also { m ->
-                    m[queen.col]++
-                },
-                descendingDiagonals.copyOf().also { m ->
-                    m[queen.descendingDiagonalId]++
-                },
-                ascendingDiagonals.copyOf().also { m ->
-                    m[queen.ascendingDiagonalId]++
-                },
-                conflictsCount + numberOfQueensOnRow(queen.row) +
-                        numberOfQueensOnColumn(queen.col) +
-                        numberOfQueensOnAscendingDiagonal(queen.ascendingDiagonalId) +
-                        numberOfQueensOnDescendingDiagonal(queen.descendingDiagonalId)
-            )
-        }
+        return with(toAddQueens = arrayOf(queen))
     }
 
     fun withoutQueen(queen: Queen): QueensDisposition {
-        if (queen !in queens) {
-            throw IllegalArgumentException()
+        return with(toRemoveQueens = arrayOf(queen))
+    }
+
+    fun with(
+        toAddQueens: Array<Queen> = emptyArray(),
+        toRemoveQueens: Array<Queen> = emptyArray()
+    ): QueensDisposition {
+        val reallyNewQueens = toAddQueens.filter { it !in queens }.toTypedArray()
+
+        val newRows = rows.copyOf()
+        val newColumns = columns.copyOf()
+        val newDescDiag = descendingDiagonals.copyOf()
+        val newAscDiag = ascendingDiagonals.copyOf()
+        var newConflictCount = conflictsCount
+        for (q in reallyNewQueens) {
+            newConflictCount += newRows[q.row] +
+                    newColumns[q.col] +
+                    newDescDiag[q.descendingDiagonalId] +
+                    newAscDiag[q.ascendingDiagonalId]
+            newRows[q.row]++
+            newColumns[q.col]++
+            newDescDiag[q.descendingDiagonalId]++
+            newAscDiag[q.ascendingDiagonalId]++
+        }
+        for (q in toRemoveQueens) {
+            if (q !in queens) {
+                throw IllegalArgumentException()
+            } else if (q in toAddQueens) {
+                throw IllegalArgumentException()
+            }
+            newConflictCount -= -4 + newRows[q.row] +
+                    newColumns[q.col] +
+                    newDescDiag[q.descendingDiagonalId] +
+                    newAscDiag[q.ascendingDiagonalId]
+            newRows[q.row]--
+            newColumns[q.col]--
+            newDescDiag[q.descendingDiagonalId]--
+            newAscDiag[q.ascendingDiagonalId]--
         }
         return QueensDisposition(
-            queens.withoutQueen(queen),
-            rows.copyOf().also { m ->
-                m[queen.row]--
-            },
-            columns.copyOf().also { m ->
-                m[queen.col]--
-            },
-            descendingDiagonals.copyOf().also { m ->
-                m[queen.descendingDiagonalId]--
-            },
-            ascendingDiagonals.copyOf().also { m ->
-                m[queen.ascendingDiagonalId]--
-            },
-            conflictsCount + 4 - numberOfQueensOnRow(queen.row) -
-                    numberOfQueensOnColumn(queen.col) -
-                    numberOfQueensOnAscendingDiagonal(queen.ascendingDiagonalId) -
-                    numberOfQueensOnDescendingDiagonal(queen.descendingDiagonalId)
-
+            { queens.with(toAddQueens = reallyNewQueens, toRemoveQueens = toRemoveQueens) },
+            newRows,
+            newColumns,
+            newDescDiag,
+            newAscDiag,
+            newConflictCount
         )
     }
 }

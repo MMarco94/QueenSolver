@@ -1,7 +1,5 @@
 package com.fmg.data
 
-import java.lang.Integer.max
-
 interface BoardEvaluator {
     fun evaluate(board: Board): Double
 }
@@ -24,9 +22,9 @@ object ConflictEvaluator : BoardEvaluator {
 
 object ConflictFreeEvaluator : BoardEvaluator {
     override fun evaluate(board: Board): Double {
-        return - Board.generateAllQueens(board.size)
+        return Board.generateAllQueens(board.size)
             .filterNot { q -> q in board.queens }
-            .count { q -> board.queensDisposition.hasConflicts(q) }
+            .count { q -> !board.queensDisposition.hasConflicts(q) }
             .toDouble()
 
     }

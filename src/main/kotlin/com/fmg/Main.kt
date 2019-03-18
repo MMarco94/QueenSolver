@@ -2,9 +2,12 @@ package com.fmg
 
 import com.fmg.data.Board
 import com.fmg.data.ConflictEvaluator
+import com.fmg.data.FactorizerBoardGenerator
 import com.fmg.data.TotalConflictEvaluator
+import com.fmg.solver.BestSolvers
 import com.fmg.solver.BestSolvers.ALL_SOLVERS
 import com.fmg.solver.Solver
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.random.Random
 
@@ -43,12 +46,13 @@ fun chooseSolver(): Solver {
 }
 
 fun main() {
-    val size = readInt("Enter the board size")
-    when (readChoice(listOf("Step by step", "Solve", "Benchmark"))) {
+    when (readChoice(listOf("Step by step", "Solve", "Benchmark", "Test Kronecker"))) {
         0 -> {//Step by step
+            val size = askBoardSize()
             printSteps(chooseSolver().createApproximationSequence(size))
         }
         1 -> {//Solution
+            val size = askBoardSize()
             printSolution(
                 chooseSolver()
                     .createApproximationSequence(size)
@@ -56,43 +60,77 @@ fun main() {
             )
         }
         2 -> {//Benchmark
-            val trials = readInt("Enter the number of trials")
-            val maxSteps = readInt("Choose a maximum number of steps")
-
-
-            for ((name, solver) in ALL_SOLVERS) {
-                val correctnessPercentageStat = DoubleSummaryStatistics()
-                val timeStat = DoubleSummaryStatistics()
-                val stepsStat = LongSummaryStatistics()
-
-                print("Computing using solver $name")
-                for (i in 0 until trials) {
-                    print(".")
-
-                    val (took, ss) = benchmark {
-                        solver.createApproximationSequence(size)
-                            .take(maxSteps)
-                            .withIndex()
-                            .last()
-                    }
-                    val (steps, solution) = ss
-
-                    timeStat.accept(took)
-                    stepsStat.accept(steps + 1)
-                    correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
-                }
-                println()
-                println("Time statistics of $name: $timeStat")
-                println("Steps statistics of $name: $stepsStat")
-                println("Correctness probability of $name: ${correctnessPercentageStat.average * 100}%")
-                println()
-                println()
-            }
-            enterToExit()
+            doBenchmark()
+        }
+        3 -> {//Kronecker test
+            testKronecker()
         }
         else -> throw IllegalStateException()
     }
 
+}
+
+private fun testKronecker() {
+    val boardGenerator = FactorizerBoardGenerator(BestSolvers.BEST_HILL_CLIMBING_SOLVER)
+    var solvedCount = 0
+    var unsolvedCount = 0
+    for (size in 4..readInt("Choose a limit")) {
+        if (TrivialFactorizer.factorize(size, 4).count() > 1) {
+            val boards = (0 until 10).map {
+                boardGenerator.generateBoard(size)
+            }
+            solvedCount += boards.count { it.isNQueenSolution() }
+            unsolvedCount += boards.count { !it.isNQueenSolution() }
+        }
+    }
+    println(DecimalFormat.getPercentInstance().format(solvedCount.toDouble() / (solvedCount + unsolvedCount)) + " boards solved immediately")
+}
+
+private fun doBenchmark() {
+    val size = askBoardSize()
+
+    val trials = readInt("Enter the number of trials")
+    val maxSteps = readInt("Choose a maximum number of steps")
+
+
+    for ((name, solver) in ALL_SOLVERS) {
+        val correctnessPercentageStat = DoubleSummaryStatistics()
+        val timeStat = DoubleSummaryStatistics()
+        val stepsStat = LongSummaryStatistics()
+        val conflictsStat = DoubleSummaryStatistics()
+
+        print("Computing using solver $name")
+        for (i in 0 until trials) {
+            print(".")
+
+            val (took, ss) = benchmark {
+                solver.createApproximationSequence(size)
+                    .take(maxSteps)
+                    .withIndex()
+                    .last()
+            }
+            val (steps, solution) = ss
+
+            timeStat.accept(took)
+            stepsStat.accept(steps + 1)
+            correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
+            conflictsStat.accept(TotalConflictEvaluator.evaluate(solution))
+        }
+        println()
+        println("Time statistics of $name: $timeStat")
+        println("Steps statistics of $name: $stepsStat")
+        println("Conflicts of $name: $conflictsStat")
+        println("Correctness probability of $name: ${correctnessPercentageStat.average * 100}%")
+        println()
+        println()
+    }
+    enterToExit()
+}
+
+private fun askBoardSize(): Int {
+    val size = readInt("Enter the board size")
+    println("Factors = " + TrivialFactorizer.factorize(size, 4).toList().sorted())
+    return size
 }
 
 private fun printSteps(steps: Sequence<Board>) {
@@ -119,6 +157,7 @@ private fun printSolution(approximationSequence: Sequence<Board>) {
         println("Solution in $steps steps:")
     } else {
         println("Best approximation after $steps steps:")
+        println("Number of conflicts: " + TotalConflictEvaluator.evaluate(solution))
     }
     solution.print()
     println("Took ${took * 1000} ms")
@@ -130,6 +169,9 @@ private fun enterToExit() {
     scanner.nextLine()
 }
 
+/**
+ * Returns a pair(seconds it took, result of given computation)
+ */
 private fun <R> benchmark(subject: () -> R): Pair<Double, R> {
     val start = System.nanoTime()
     val ret = subject()

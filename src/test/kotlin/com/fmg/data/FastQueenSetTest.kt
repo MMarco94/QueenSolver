@@ -35,14 +35,25 @@ class FastQueenSetTest {
 
         val rnd = Random()
         for (i in 0..10000) {
-            val queen = Queen(rnd.nextInt(20), rnd.nextInt(20))
-            if (control.contains(queen)) {
-                assertTrue(fast.contains(queen))
-            } else {
-                assertFalse(fast.contains(queen))
-                fast = fast.withQueen(queen)
-                control = control + queen
+            val queens = listOf(
+                Queen(rnd.nextInt(20), rnd.nextInt(20)),
+                Queen(20 + rnd.nextInt(20), rnd.nextInt(20)),
+                Queen(rnd.nextInt(20), 20 + rnd.nextInt(20)),
+                Queen(20 + rnd.nextInt(20), 20 + rnd.nextInt(20))
+            )
+            val toRemove = mutableListOf<Queen>()
+            val toAdd = mutableListOf<Queen>()
+            for (q in queens) {
+                if (control.contains(q)) {
+                    assertTrue(fast.contains(q))
+                    toRemove.add(q)
+                } else {
+                    assertFalse(fast.contains(q))
+                    toAdd.add(q)
+                }
             }
+            fast = fast.with(toAddQueens = toAdd.toTypedArray(), toRemoveQueens = toRemove.toTypedArray())
+            control = control + toAdd - toRemove
             assertEquals(control, fast)
         }
     }
