@@ -1,6 +1,8 @@
 package com.fmg.data
 
-import com.fmg.*
+import com.fmg.Factorizer
+import com.fmg.RANDOM
+import com.fmg.TrivialFactorizer
 import com.fmg.solver.Solver
 
 interface BoardGenerator {
@@ -68,20 +70,4 @@ class FactorizerBoardGenerator(
                 b1 * b2
             }
     }
-}
-
-class BestOfKBoardGenerator(
-    val generator: BoardGenerator,
-    val k: Int,
-    val evaluator: BoardEvaluator = TotalConflictEvaluator
-) : BoardGenerator {
-    override fun generateBoard(size: Int): Board {
-        return generateSequence { generator.generateBoard(size).withScore(evaluator) }
-            .take(k)
-            .takeWhileInclusive { it.score > 0 }//If it is 0, I can terminate immediately
-            .allMinBy { it.score }
-            .random(RANDOM)
-            .board
-    }
-
 }
