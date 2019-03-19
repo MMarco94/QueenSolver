@@ -125,18 +125,16 @@ class SimulatedAnnealingNeighborsGenerator(
 ) : NeighborsGenerator {
     override fun generateNeighbors(board: Board): Sequence<Board> {
         return board.queens
-            .sortedByDescending { q -> queenEvaluator.evaluate(q, board) }
+            .getMinKBy(log2(board.size.toDouble()).toInt() + 1) { q -> -queenEvaluator.evaluate(q, board) }
             .asSequence()
-            .take(log2(board.size.toDouble()).toInt() + 1)
             .flatMap { q1 ->
-                val withoutQueen = board.withoutQueen(q1)
                 board.queens.asSequence()
                     .filter { q2 -> q1 != q2 }
                     .map { q2 ->
-                        withoutQueen
-                            .withoutQueen(q2)
-                            .withQueen(Queen(q1.row, q2.col))
-                            .withQueen(Queen(q2.row, q1.col))
+                        board.with(
+                            toAddQueens = arrayOf(Queen(q1.row, q2.col), Queen(q2.row, q1.col)),
+                            toRemoveQueens = arrayOf(q1, q2)
+                        )
                     }
             }
     }

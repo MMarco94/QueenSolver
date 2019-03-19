@@ -9,7 +9,7 @@ interface Selector {
     fun select(population: Collection<Board>, boardLimit: Int = population.size / 2): Collection<Board>
 }
 
-class StaticFitnessSelector(
+class FitnessSelector(
     private val fitnessFunction: BoardEvaluator = TotalConflictEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {

@@ -11,7 +11,7 @@ import java.text.DecimalFormat
 import java.util.*
 import kotlin.random.Random
 
-val RANDOM = Random(73)
+val RANDOM = Random(42)
 
 val scanner = Scanner(System.`in`)
 

@@ -26,31 +26,29 @@ class SimulatedAnnealingSolver(
                 .take(100)
 
                 .toList()
-                .random()
+                .random(RANDOM)
                 .let { currentBoard ->
                     val deltaScore = prevBoard.boardWithScore.score - currentBoard.score
-                    val prob =  acceptanceProb(deltaScore,tZero, prevBoard.stepsFromRennealing.toDouble())
-                    if (RANDOM.nextDouble() < prob )
+                    val prob = acceptanceProb(deltaScore, tZero, prevBoard.stepsFromRennealing.toDouble())
+                    if (RANDOM.nextDouble() < prob) {
                         currentBoard.withAnnealing(prevBoard.stepsFromRennealing + 1)
-                    else
+                    } else {
                         prevBoard.boardWithScore.withAnnealing()
+                    }
                 }
         }.takeWhileInclusive { (b) -> !b.board.isNQueenSolution() }
     }
 
 
     private fun acceptanceProb(deltaScore: Double, tZero: Double, k: Double): Double {
-        if ( deltaScore >= 0)
-            return 1.0
-        else
-            return exp(deltaScore * 50 / temperature(tZero,k) )
+        return if (deltaScore >= 0) {
+            1.0
+        } else {
+            exp(deltaScore * 50 / temperature(tZero, k))
+        }
     }
 
-    private fun temperature (tZero: Double, k : Double): Double{
+    private fun temperature(tZero: Double, k: Double): Double {
         return tZero / log10(k)
-    }
-
-    private fun reannilingProbability2(deltaScore: Double, prevScore: Double): Double {
-        return exp(-(deltaScore) / prevScore) * 0.0001
     }
 }

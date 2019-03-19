@@ -1,7 +1,6 @@
 package com.fmg.solver
 
 import com.fmg.data.Board
-import com.fmg.data.TotalConflictEvaluator
 import com.fmg.data.genetic.*
 import com.fmg.takeWhileInclusive
 
@@ -18,7 +17,7 @@ class GeneticSolver(
             val selected = selector.select(population)
             val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
-            repalcer.replace(population + mutated, population.size)
+            repalcer.replace(population, mutated, population.size)
         }
     }
 
