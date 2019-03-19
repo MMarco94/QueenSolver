@@ -62,10 +62,17 @@ object BestSolvers {
         KRONECKER_BOARD_GENERATOR,
         TerminateWhenSolved//TODO
     )
+    val REPEATED_KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
+        TotalConflictEvaluator,
+        LogRowSwapperNeighborsGenerator(),
+        BestOfKBoardGenerator(KRONECKER_BOARD_GENERATOR, 5),
+        TerminateWhenSolved//TODO
+    )
 
     val ALL_SOLVERS = mapOf(
-        "Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
+        "Hill Climbing with repeated Kℝ0ℕ€cK€ℝ" to REPEATED_KRONECKER_HILL_CLIMBING_SOLVER,
+        "Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Simulated annealing" to SIMULATED_ANNELING,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
