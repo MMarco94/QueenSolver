@@ -25,12 +25,12 @@ object HorizontalQueenMoverMutator : Mutator {
 object SwapRowMutator : Mutator {
     override fun mutate(board: Board, probability: Double): Board {
         var newBoard = board
-        for (q1 in newBoard.queens) {
+        for (row in 0 until newBoard.size) {
+            val q1 = newBoard.queens.single { it.row == row }
             if (RANDOM.nextDouble() < probability) {
-                val row = RANDOM.nextInt(newBoard.size)
-                val q2 = newBoard.queens.single { q -> q.row == row }
-
-                if (row != q1.row) {
+                val newRow = RANDOM.nextInt(newBoard.size)
+                if (newRow != row) {
+                    val q2 = newBoard.queens.single { q -> q.row == newRow }
                     newBoard = newBoard.with(
                         toAddQueens = arrayOf(Queen(q1.row, q2.col), Queen(q2.row, q1.col)),
                         toRemoveQueens = arrayOf(q1, q2)
