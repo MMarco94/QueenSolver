@@ -21,22 +21,19 @@ class SimulatedAnnealingSolver(
     }
 
     private fun solve(size: Int, tZero: Double): Sequence<BoardWithScoreAndAnnealing> {
-        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator).withAnnealing()) { prevBoard ->
+        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator).withAnnealingSteps()) { prevBoard ->
             neighborsGenerator.generateNeighbors(prevBoard.boardWithScore.board)
 
                 .map { b -> b.withScore(evaluator) }
-                .sortedBy { it.score }
-                .take(100)
-
                 .toList()
                 .random(RANDOM)
                 .let { currentBoard ->
                     val deltaScore = prevBoard.boardWithScore.score - currentBoard.score
                     val prob = acceptanceProb(deltaScore, tZero, prevBoard.stepsFromRennealing.toDouble())
                     if (RANDOM.nextDouble() < prob) {
-                        currentBoard.withAnnealing(prevBoard.stepsFromRennealing + 1)
+                        currentBoard.withAnnealingSteps(prevBoard.stepsFromRennealing + 1)
                     } else {
-                        prevBoard.boardWithScore.withAnnealing()
+                        prevBoard.boardWithScore.withAnnealingSteps()
                     }
                 }
         }.takeWhileInclusive { (b) -> !b.board.isNQueenSolution() }
@@ -56,7 +53,7 @@ class SimulatedAnnealingSolver(
     }
 }
 
-fun BoardWithScore.withAnnealing(annealingSteps: Int = 0) =
+fun BoardWithScore.withAnnealingSteps(annealingSteps: Int = 0) =
     BoardWithScoreAndAnnealing(BoardWithScore(board, score), annealingSteps);
 
 

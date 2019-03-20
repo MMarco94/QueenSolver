@@ -110,7 +110,7 @@ private fun doBenchmark() {
         "Choose a maximum number of steps, or type [0-9]s to limit in seconds",
         Pattern.compile("(\\d+)\\s*(s)?")
     )
-    val (stepsLimit, timeLimit) = if (limit.group(2).isEmpty()) {
+    val (stepsLimit, timeLimit) = if (limit.group(2).isNullOrEmpty()) {
         limit.group(1).toInt() to null
     } else {
         null to Duration.ofSeconds(limit.group(1).toLong())
