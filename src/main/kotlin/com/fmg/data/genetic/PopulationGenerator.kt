@@ -3,9 +3,10 @@ package com.fmg.data.genetic
 import com.fmg.data.Board
 import com.fmg.data.BoardGenerator
 import com.fmg.data.OneQueenPerRowAndColumnRandomBoardGenerator
+import kotlin.math.sqrt
 
 interface PopulationGenerator {
-    fun generatePopulation(boardSize: Int, populationSize: Int = 10 * boardSize): Collection<Board>
+    fun generatePopulation(boardSize: Int, populationSize: Int = (sqrt(boardSize.toDouble()) * boardSize).toInt()): Collection<Board>
 }
 
 /**
