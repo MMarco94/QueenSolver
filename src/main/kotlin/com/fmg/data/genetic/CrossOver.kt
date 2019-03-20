@@ -1,7 +1,9 @@
 package com.fmg.data.genetic
 
 import com.fmg.RANDOM
-import com.fmg.data.*
+import com.fmg.data.Board
+import com.fmg.data.OneQueenPerRowAndColumnRandomBoardGenerator
+import com.fmg.data.Queen
 
 interface CrossOver {
     fun crossOver(boardPopulation: Collection<Board>): Collection<Board>
@@ -23,15 +25,10 @@ object RowQueenCrossOver : CrossOver {
         val returnBoardCollection = mutableListOf<Board>()
 
         while (population.isNotEmpty()) {
-            var firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
-            var secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            val firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            val secondRowIndexCrossOver = RANDOM.nextInt(firstRowIndexCrossOver, boardSize)
             var firstBoard = RANDOM.nextInt(boardPopulation.size)
             var secondBoard = RANDOM.nextInt(boardPopulation.size)
-
-            while (firstRowIndexCrossOver >= secondRowIndexCrossOver) {
-                firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
-                secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
-            }
 
             while (firstBoard == secondBoard) {
                 firstBoard = RANDOM.nextInt(population.size)
@@ -160,45 +157,42 @@ class IsThisACrossOver (private val evaluator: BoardEvaluator = TotalConflictEva
 */
 
 object SwapRowsCrossOver : CrossOver {
+
     override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
         val boardSize = boardPopulation.first().size
-        val population = boardPopulation.toMutableList()
+        val population = boardPopulation.toList()
         val returnBoardCollection = mutableListOf<Board>()
 
-        while (population.isNotEmpty()) {
-            var firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
-            var secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
+        for ((index, board1) in population.withIndex()) {
+            val board2 = population[RANDOM.nextInt(index, population.size)]
 
-            while (firstRowIndexCrossOver >= secondRowIndexCrossOver) {
-                firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
-                secondRowIndexCrossOver = RANDOM.nextInt(boardSize)
-            }
+            val firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
+            val secondRowIndexCrossOver = RANDOM.nextInt(firstRowIndexCrossOver, boardSize)
 
-            var board1 = population.removeAt(0)
-            var board2 = population.random()
-
-            population.remove(board2)
-
+            var newBoard1 = board1
+            var newBoard2 = board2
             for (i in firstRowIndexCrossOver until secondRowIndexCrossOver) {
-                val q1 = board1.queens.single { q -> q.row == i }
-                val q2 = board2.queens.single { q -> q.col == q1.col }
+                val q1 = newBoard1.queens.single { q -> q.row == i }
+                val q2 = newBoard2.queens.single { q -> q.col == q1.col }
 
                 if (q1.row != q2.row) {
-                    val q3 = board1.queens.single { q -> q.row == q2.row }
-                    val q4 = board2.queens.single { q -> q.row == q1.row }
+                    val q3 = newBoard1.queens.single { q -> q.row == q2.row }
+                    val q4 = newBoard2.queens.single { q -> q.row == q1.row }
 
-                    board1 = board1.withQueen(Queen(q1.row, q3.col)).withQueen(q2)
-                        .withoutQueen(q1)
-                        .withoutQueen(q3)
+                    newBoard1 = newBoard1.with(
+                        toAddQueens = arrayOf(Queen(q1.row, q3.col), q2),
+                        toRemoveQueens = arrayOf(q1, q3)
+                    )
 
-                    board2 = board2.withQueen(Queen(q2.row, q4.col)).withQueen(q1)
-                        .withoutQueen(q2)
-                        .withoutQueen(q4)
+                    newBoard2 = newBoard2.with(
+                        toAddQueens = arrayOf(Queen(q2.row, q4.col), q1),
+                        toRemoveQueens = arrayOf(q2, q4)
+                    )
                 }
             }
 
-            returnBoardCollection.add(board1)
-            returnBoardCollection.add(board2)
+            returnBoardCollection.add(newBoard1)
+            returnBoardCollection.add(newBoard2)
         }
         return returnBoardCollection
     }
