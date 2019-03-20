@@ -63,6 +63,14 @@ object BestSolvers {
         TerminateWhenSolved//TODO
     )
 
+    val KRONECKER_ROULETTE_WHEEL_GENETIC_SOLVER = GeneticSolver(
+        IndependentPopulationGenerator(KRONECKER_BOARD_GENERATOR),
+        RouletteWheelSelector(),
+        SwapRowsCrossOver,
+        SwapRowMutator,
+        LambdaMuReplacer()
+    )
+
     val ALL_SOLVERS = mapOf(
         "Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
@@ -70,7 +78,8 @@ object BestSolvers {
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Columns with static selection" to BEST_GENETIC_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER
+        //"Genetic Algorithm with Queens on Different Rows and Columns with static selection" to BEST_GENETIC_SOLVER,
+        //"Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER,
+        "Kronecker Genetic Algorithm" to KRONECKER_ROULETTE_WHEEL_GENETIC_SOLVER
     )
 }

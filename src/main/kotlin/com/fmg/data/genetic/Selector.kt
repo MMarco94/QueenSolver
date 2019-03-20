@@ -6,7 +6,7 @@ import com.fmg.data.BoardEvaluator
 import com.fmg.data.TotalConflictEvaluator
 
 interface Selector {
-    fun select(population: Collection<Board>, boardLimit: Int = population.size / 2): Collection<Board>
+    fun select(population: Collection<Board>, boardLimit: Int = population.size / 4): Collection<Board>
 }
 
 class FitnessSelector(

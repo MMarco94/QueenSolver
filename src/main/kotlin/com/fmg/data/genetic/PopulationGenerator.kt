@@ -5,7 +5,7 @@ import com.fmg.data.BoardGenerator
 import com.fmg.data.OneQueenPerRowAndColumnRandomBoardGenerator
 
 interface PopulationGenerator {
-    fun generatePopulation(boardSize: Int, populationSize: Int = boardSize * boardSize): Collection<Board>
+    fun generatePopulation(boardSize: Int, populationSize: Int = 10 * boardSize): Collection<Board>
 }
 
 /**
