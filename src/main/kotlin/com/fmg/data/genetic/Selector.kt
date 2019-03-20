@@ -21,11 +21,15 @@ class FitnessSelector(
     }
 }
 
-@Suppress("NAME_SHADOWING")
 class RouletteWheelSelector(
     private val fitnessFunction: BoardEvaluator = TotalConflictEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {
+        var bl = boardLimit
+        if (bl % 2 != 0) {
+            bl += 1
+        }
+
         val weights = mutableListOf<Double>()
         val populationSelected = mutableListOf<Board>()
         var selectedIndex: Int
@@ -47,13 +51,12 @@ class RouletteWheelSelector(
 
     private fun rouletteSelect(weights: List<Double>): Int {
         var weightSum = 0.0
-        var i = 0
         var value: Double
         for (i in 0 until weights.size) {
             weightSum += weights[i]
         }
         value = RANDOM.nextDouble(1.0) * weightSum
-
+        var i = 0
         while (value > 0.0 && i < weights.size) {
             value -= weights[i]
             i++
