@@ -7,7 +7,7 @@ interface LocalSearchTerminator {
     fun terminate(boardSequence: Sequence<BoardWithScore>): Sequence<BoardWithScore>
 }
 
-object TerminateWhenSolved : LocalSearchTerminator {
+object TerminateWhenGlobalOptimumFound : LocalSearchTerminator {
     override fun terminate(boardSequence: Sequence<BoardWithScore>): Sequence<BoardWithScore> {
         return boardSequence.takeWhileInclusive { !it.board.isNQueenSolution() }
     }
