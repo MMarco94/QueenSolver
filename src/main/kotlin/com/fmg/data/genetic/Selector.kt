@@ -79,7 +79,7 @@ class FitnessProportionalSelector(
         }
 
         val maxconflict = population.first().size * (population.first().size - 1) / 2.0
-        val totalFitnessValue = population.sumBy { fitnessFunction.evaluate(it).toInt() }.toDouble()
+        var totalFitnessValue = population.sumBy { fitnessFunction.evaluate(it).toInt() }.toDouble()
         val weights = mutableListOf<Double>()
         val populationSelected = mutableListOf<Board>()
         var selectedIndex: Int
@@ -92,10 +92,16 @@ class FitnessProportionalSelector(
 
         for (i in 0 until boardLimit) {
             selectedIndex = rouletteSelect(weights, totalFitnessValue)
-            //println(selectedIndex)
             val board = population.toMutableList().removeAt(selectedIndex)
+            val previousTotalFitnessValue = totalFitnessValue
             weights.removeAt(selectedIndex)
             populationSelected.add(board)
+
+            totalFitnessValue -= fitnessFunction.evaluate(board)
+
+            for (j in 0 until weights.size) {
+                weights[j] = weights[j] * previousTotalFitnessValue / totalFitnessValue
+            }
         }
 
         return populationSelected
@@ -115,5 +121,3 @@ class FitnessProportionalSelector(
         }
     }
 }
-
-// sqrt(population.first().size.toDouble()).toInt()

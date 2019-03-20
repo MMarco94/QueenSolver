@@ -19,13 +19,13 @@ class GeneticSolver(
             val crossOvered = crossOver.crossOver(selected)
             val mutated = crossOvered.map { c -> mutator.mutate(c) }
 
-            val np = selector.select((population + mutated), population.size)
+            /*val np = selector.select((population + mutated), population.size)
 
             var sum: Double = 0.0
             for (i in np) {
                 sum += TotalConflictBoardEvaluator.evaluate(i)
             }
-            println(sum / np.size)
+            println(sum / np.size)*/
 
             repalcer.replace(population, mutated, population.size)
         }
