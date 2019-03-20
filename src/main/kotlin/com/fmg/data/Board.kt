@@ -22,6 +22,9 @@ class Board private constructor(
      */
     fun withoutQueen(queen: Queen) = Board(size, queensDisposition.withoutQueen(queen))
 
+    /**
+     * @return a new board the given modifications
+     */
     fun with(
         toAddQueens: Array<Queen> = emptyArray(),
         toRemoveQueens: Array<Queen> = emptyArray()
@@ -29,6 +32,9 @@ class Board private constructor(
 
     fun isNQueenSolution() = queens.size == size && !queensDisposition.hasConflicts()
 
+    /**
+     * @return the Kronecker product between two boards
+     */
     operator fun times(another: Board): Board {
         return Board(size * another.size).with(toAddQueens = another.queens.flatMap { q1 ->
             queens.map { q2 ->
@@ -54,11 +60,21 @@ class Board private constructor(
         }
     }
 
+    /**
+     * @return a BoardWithScore with the given score
+     */
     fun withScore(score: Double) = BoardWithScore(this, score)
+
+    /**
+     * @return a BoardWithScore with score computed according to the given evaluator
+     */
     fun withScore(evaluator: BoardEvaluator) = withScore(evaluator.evaluate(this))
 
     companion object {
 
+        /**
+         * @return a sequence with all the queens of a size*size board
+         */
         fun generateAllQueens(size: Int): Sequence<Queen> {
             return (0 until size).asSequence()
                 .flatMap { row ->
@@ -69,9 +85,8 @@ class Board private constructor(
     }
 }
 
-data class BoardWithScore(val board: Board, val score: Double) {
-    fun withAnnealing(annealingSteps: Int = 0) =
-        BoardWithScoreAndAnnealing(BoardWithScore(board, score), annealingSteps);
-}
+/**
+ * This class represents a board with its score.
+ */
+data class BoardWithScore(val board: Board, val score: Double)
 
-data class BoardWithScoreAndAnnealing(val boardWithScore: BoardWithScore, val stepsFromRennealing: Int = 0)

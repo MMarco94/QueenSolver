@@ -1,7 +1,10 @@
 package com.fmg.solver
 
 import com.fmg.RANDOM
-import com.fmg.data.*
+import com.fmg.data.BoardEvaluator
+import com.fmg.data.BoardGenerator
+import com.fmg.data.BoardWithScore
+import com.fmg.data.NeighborsGenerator
 import com.fmg.takeWhileInclusive
 import kotlin.math.exp
 import kotlin.math.log10
@@ -52,3 +55,9 @@ class SimulatedAnnealingSolver(
         return tZero / log10(k)
     }
 }
+
+fun BoardWithScore.withAnnealing(annealingSteps: Int = 0) =
+    BoardWithScoreAndAnnealing(BoardWithScore(board, score), annealingSteps);
+
+
+data class BoardWithScoreAndAnnealing(val boardWithScore: BoardWithScore, val stepsFromRennealing: Int = 0)

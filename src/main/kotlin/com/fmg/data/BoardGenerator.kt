@@ -3,7 +3,6 @@ package com.fmg.data
 import com.fmg.Factorizer
 import com.fmg.RANDOM
 import com.fmg.TrivialFactorizer
-import com.fmg.repeatLastElement
 import com.fmg.solver.Solver
 
 interface BoardGenerator {

@@ -77,11 +77,6 @@ fun <T> Sequence<T>.repeatLastElement(fallbackIfEmpty: () -> T = { throw Unsuppo
 fun Sequence<BoardWithScore>.terminate(localSearchTerminator: LocalSearchTerminator) =
     localSearchTerminator.terminate(this)
 
-fun <T : Any> Sequence<T>.extractWithRepetitions(): Sequence<T> {
-    val toList = this.toList()
-    return generateSequence { toList[RANDOM.nextInt(toList.size)] }
-}
-
 fun <T : Any> Sequence<T>.takeWithProbability(probability: Double): Sequence<T> {
     return takeWithProbability { _ -> probability }
 }
@@ -90,17 +85,15 @@ fun <T : Any> Sequence<T>.takeWithProbability(probability: (T) -> Double): Seque
     return this.filter { RANDOM.nextDouble() < probability(it) }
 }
 
-fun <T, R : Comparable<R>> Iterable<T>.getMinKBy(k: Int, value: (T) -> R): MutableList<T> {
+/**
+ * Returns a list containing the  k elements that yield the lowest value.
+ * The returning list is NOT sorted.
+ * This method runs in O(size)
+ */
+fun <T, R : Comparable<R>> Iterable<T>.getMinKBy(k: Int, value: (T) -> R): List<T> {
     val list = toMutableList()
     val realK = min(k, list.size)
     minK(list, realK, Comparator.comparing<T, R> { value(it) }, 0, list.size - 1)
-    return list.subList(0, realK)
-}
-
-fun <T> Iterable<T>.getMinKWith(k: Int, comparator: Comparator<T>): MutableList<T> {
-    val list = toMutableList()
-    val realK = min(k, list.size)
-    minK(list, realK, comparator, 0, list.size - 1)
     return list.subList(0, realK)
 }
 
