@@ -89,15 +89,8 @@ class FitnessProportionalSelector(
         for (i in 0 until boardLimit) {
             selectedIndex = rouletteSelect(weights, totalFitnessValue)
             val board = population.toMutableList().removeAt(selectedIndex)
-            val previousTotalFitnessValue = totalFitnessValue
             weights.removeAt(selectedIndex)
             populationSelected.add(board)
-
-            totalFitnessValue -= fitnessFunction.evaluate(board)
-
-            for (j in 0 until weights.size) {
-                weights[j] = weights[j] * previousTotalFitnessValue / totalFitnessValue
-            }
         }
 
         return populationSelected
