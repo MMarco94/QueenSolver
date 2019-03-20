@@ -17,7 +17,7 @@ object BestSolvers {
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator,
-        TerminateWhenGlobalOptimumFound//TODO
+        TerminateWhenNoConflicts//TODO
     )
 
     val BEST_DETERMINISTIC_HILL_CLIMBING  = HillClimbingSolver(
@@ -36,13 +36,13 @@ object BestSolvers {
         TotalConflictEvaluator,
         HorizontalQueenMoverNeighborsGenerator,
         OneQueenPerRowRandomBoardGenerator,
-        TerminateWhenGlobalOptimumFound//TODO
+        TerminateWhenNoConflicts//TODO
     )
     val BLUE_TORNADO_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
         KQueensMoverNeighborsGenerator(2),
         OneQueenPerRowRandomBoardGenerator,
-        TerminateWhenGlobalOptimumFound//TODO
+        TerminateWhenNoConflicts//TODO
     )
     val CONSTRAINT_PROPAGATION_SOLVER = ConstraintPropagationAndBacktrackingSolver()
 
@@ -83,7 +83,7 @@ object BestSolvers {
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
         KRONECKER_BOARD_GENERATOR,
-        TerminateWhenGlobalOptimumFound//TODO
+        TerminateWhenNoConflicts//TODO
     )
 
     val KRONECKER_ROULETTE_WHEEL_GENETIC_SOLVER = GeneticSolver(
