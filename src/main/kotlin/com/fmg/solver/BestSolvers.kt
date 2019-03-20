@@ -10,7 +10,7 @@ object BestSolvers {
         TotalConflictEvaluator,
         LogRowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator,
-        TerminateWhenSolved//TODO
+        TerminateWhenNotImproving//TODO
     )
 
     val TABU_SEARCH_SOLVER = TabuSerachSolver(
@@ -19,6 +19,14 @@ object BestSolvers {
         OneQueenPerRowAndColumnRandomBoardGenerator,
         TerminateWhenSolved//TODO
     )
+
+    val BEST_DETERMINISTIC_HILL_CLIMBING  = HillClimbingSolver(
+        TotalConflictEvaluator,
+        DeterministicOneQueenPerRowAndColumnNeighborsGenerator (),
+        OneQueenPerRowAndColumnRandomBoardGenerator,
+        TerminateWhenNotImproving
+    )
+
     val SIMULATED_ANNELING = SimulatedAnnealingSolver(
         TotalConflictEvaluator,
         SimulatedAnnealingNeighborsGenerator(),
@@ -74,6 +82,7 @@ object BestSolvers {
     val ALL_SOLVERS = mapOf(
         "Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
+        "Deterministic hill climbing" to BEST_DETERMINISTIC_HILL_CLIMBING,
         "Simulated annealing" to SIMULATED_ANNELING,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
