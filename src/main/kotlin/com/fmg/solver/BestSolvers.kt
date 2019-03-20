@@ -86,17 +86,35 @@ object BestSolvers {
         LambdaMuReplacer()
     )
 
+    val ONE_ROW_QUEEN_COLUMNCHECK_ROULETTE_WHEEL_GENETIC_SOLVER = GeneticSolver(
+        IndependentPopulationGenerator(OneQueenPerRowRandomBoardGenerator),
+        RouletteWheelSelector(),
+        RowQueenWithColumnCheckCrossOver,
+        HorizontalQueenMoverMutator,
+        LambdaMuReplacer()
+    )
+
+    val ONE_ROW_QUEEN_ROULETTE_WHEEL_GENETIC_SOLVER = GeneticSolver(
+        IndependentPopulationGenerator(OneQueenPerRowRandomBoardGenerator),
+        RouletteWheelSelector(),
+        RowQueenCrossOver,
+        HorizontalQueenMoverMutator,
+        LambdaMuReplacer()
+    )
+
     val ALL_SOLVERS = mapOf(
         "Genetic Algorithm with Queens on Different Rows and Columns with static selection" to BEST_GENETIC_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Columns basic" to BEST_GENETIC_SOLVER_BASIC,
         "Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER,
-        "Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
+        "Genetic Algorithm with Queens on Different Rows and Crossover with Column check" to ONE_ROW_QUEEN_COLUMNCHECK_ROULETTE_WHEEL_GENETIC_SOLVER,
+        "Genetic Algorithm with Queens on Different Rows and Crossover" to ONE_ROW_QUEEN_COLUMNCHECK_ROULETTE_WHEEL_GENETIC_SOLVER
+
+        /*"Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
         "Deterministic hill climbing" to BEST_DETERMINISTIC_HILL_CLIMBING,
         "Simulated annealing" to SIMULATED_ANNELING,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
         "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
-        "Kronecker Genetic Algorithm" to KRONECKER_ROULETTE_WHEEL_GENETIC_SOLVER
+        "Kronecker Genetic Algorithm" to KRONECKER_ROULETTE_WHEEL_GENETIC_SOLVER*/
     )
 }
