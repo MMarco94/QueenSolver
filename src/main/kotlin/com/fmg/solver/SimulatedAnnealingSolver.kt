@@ -1,10 +1,7 @@
 package com.fmg.solver
 
 import com.fmg.RANDOM
-import com.fmg.data.BoardEvaluator
-import com.fmg.data.BoardGenerator
-import com.fmg.data.BoardWithScore
-import com.fmg.data.NeighborsGenerator
+import com.fmg.data.*
 import com.fmg.takeWhileInclusive
 import kotlin.math.exp
 import kotlin.math.log10
@@ -15,45 +12,47 @@ class SimulatedAnnealingSolver(
     boardGenerator: BoardGenerator
 ) : OptimizationSolver(evaluator, neighborsGenerator, boardGenerator) {
 
+    val tZero: Double = 100.0;
+
+    val cooledStatusTemperature: Double = 1.0;
+
     override fun createApproximationSequenceWithScore(size: Int): Sequence<BoardWithScore> {
-        return solve(size, 5.0)
-            .map { b -> b.boardWithScore }
-    }
-
-    private fun solve(size: Int, tZero: Double): Sequence<BoardWithScoreAndAnnealing> {
-        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator).withAnnealingSteps()) { prevBoard ->
-            neighborsGenerator.generateNeighbors(prevBoard.boardWithScore.board)
-
+        return generateSequence(boardGenerator.generateBoard(size).withScore(evaluator).withAnnealingSteps()) { currentBoard ->
+            neighborsGenerator.generateNeighbors(currentBoard.boardWithScore.board)
                 .map { b -> b.withScore(evaluator) }
                 .toList()
                 .random(RANDOM)
-                .let { currentBoard ->
-                    val deltaScore = prevBoard.boardWithScore.score - currentBoard.score
-                    val prob = acceptanceProb(deltaScore, tZero, prevBoard.stepsFromRennealing.toDouble())
+                .let { nextBoard ->
+                    val deltaEnergy = nextBoard.score - currentBoard.boardWithScore.score
+                    val prob = acceptanceProb(deltaEnergy, currentBoard.stepsFromRennealing.toDouble())
                     if (RANDOM.nextDouble() < prob) {
-                        currentBoard.withAnnealingSteps(prevBoard.stepsFromRennealing + 1)
+                        nextBoard.withAnnealingSteps(currentBoard.stepsFromRennealing + 1)
                     } else {
-                        prevBoard.boardWithScore.withAnnealingSteps()
+                        currentBoard.boardWithScore.withAnnealingSteps()
                     }
                 }
-        }.takeWhileInclusive { (b) -> !b.board.isNQueenSolution() }
+        }.takeWhileInclusive { b ->
+            val temp = temperature(b.stepsFromRennealing.toDouble())
+            temp > cooledStatusTemperature }
+
+            .map { b -> b.boardWithScore }
+
     }
 
-
-    private fun acceptanceProb(deltaScore: Double, tZero: Double, k: Double): Double {
-        return if (deltaScore >= 0) {
+    private fun acceptanceProb(deltaEnergy: Double, k: Double): Double {
+        return if (deltaEnergy <= 0) {
             1.0
         } else {
-            exp(deltaScore * 50 / temperature(tZero, k))
+            exp(-deltaEnergy * 20 / temperature(k))
         }
     }
 
-    private fun temperature(tZero: Double, k: Double): Double {
-        return tZero / log10(k)
+    private fun temperature( k: Double): Double {
+        return tZero / log10(k + 1)
     }
 }
 
-fun BoardWithScore.withAnnealingSteps(annealingSteps: Int = 0) =
+fun BoardWithScore.withAnnealingSteps(annealingSteps: Int = 1) =
     BoardWithScoreAndAnnealing(BoardWithScore(board, score), annealingSteps);
 
 
