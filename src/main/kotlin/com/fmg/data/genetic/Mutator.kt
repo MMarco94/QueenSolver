@@ -5,32 +5,9 @@ import com.fmg.data.Board
 import com.fmg.data.Queen
 
 interface Mutator {
-    //fun mutate(board: Board): Board
+
     fun mutate(board: Board, probability: Double = 1 / (board.size.toDouble() * board.size.toDouble())): Board
 }
-
-/*
-class ProbabilisticMutator(
-    private val mutator: Mutator
-) : Mutator {
-    override fun mutate(board: Board, probability: Double): Board {
-        return if (RANDOM.nextDouble() < probability) {
-            mutator.mutate(board)
-        } else {
-            board
-        }
-    }
-}
-*/
-
-/*
-class RandomNeighbourMutator(private val neighborsGenerator: NeighborsGenerator) : Mutator {
-    override fun mutate(board: Board): Board {
-        return neighborsGenerator.generateNeighbors(board).toList().random(RANDOM)
-    }
-}
-*/
-
 
 class BasicMutator(val size: Int) : Mutator {
     override fun mutate(board: Board, probability: Double): Board {
