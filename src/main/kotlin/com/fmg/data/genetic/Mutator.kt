@@ -9,12 +9,12 @@ interface Mutator {
     fun mutate(board: Board, probability: Double = 1 / (board.size.toDouble() * board.size.toDouble())): Board
 }
 
-class BasicMutator(val size: Int) : Mutator {
+object HorizontalQueenMoverMutator : Mutator {
     override fun mutate(board: Board, probability: Double): Board {
         var b = board
         b.queens.forEach { queen ->
             if (RANDOM.nextDouble() < probability) {
-                b = b.withoutQueen(queen).withQueen(Queen(queen.row, RANDOM.nextInt(size)))
+                b = b.withoutQueen(queen).withQueen(Queen(queen.row, RANDOM.nextInt(b.size)))
             }
         }
         return b
@@ -24,20 +24,20 @@ class BasicMutator(val size: Int) : Mutator {
 
 object SwapRowMutator : Mutator {
     override fun mutate(board: Board, probability: Double): Board {
-        var queens = board.queens.toMutableList()
-        for (i in 0 until board.size) {
-            val queen = queens[i]
+        var newBoard = board
+        for (q1 in newBoard.queens) {
             if (RANDOM.nextDouble() < probability) {
-                val row = RANDOM.nextInt(board.size)
-                val q = board.queens.single { q -> q.row == row }
+                val row = RANDOM.nextInt(newBoard.size)
+                val q2 = newBoard.queens.single { q -> q.row == row }
 
-                if (row != queen.row) {
-                    queens = (queens - queen - q + Queen(queen.row, q.col) + Queen(q.row, queen.col)).toMutableList()
+                if (row != q1.row) {
+                    newBoard = newBoard.with(
+                        toAddQueens = arrayOf(Queen(q1.row, q2.col), Queen(q2.row, q1.col)),
+                        toRemoveQueens = arrayOf(q1, q2)
+                    )
                 }
             }
         }
-        board.queens.forEach { q -> board.withQueen(q) }
-        queens.forEach { q -> board.withQueen(q) }
-        return board
+        return newBoard
     }
 }

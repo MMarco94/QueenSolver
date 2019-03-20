@@ -49,8 +49,15 @@ object BestSolvers {
     val BEST_GENETIC_SOLVER = GeneticSolver(
         IndependentPopulationGenerator(),
         FitnessSelector(),
-        SwapRowsCrossOver,
+        RowQueenWithColumnCheckCrossOver,
         SwapRowMutator,
+        LambdaMuReplacer()
+    )
+    val BEST_GENETIC_SOLVER_BASIC = GeneticSolver(
+        IndependentPopulationGenerator(),
+        FitnessSelector(),
+        RowQueenWithColumnCheckCrossOver,
+        HorizontalQueenMoverMutator,
         LambdaMuReplacer()
     )
 
@@ -81,6 +88,7 @@ object BestSolvers {
 
     val ALL_SOLVERS = mapOf(
         "Genetic Algorithm with Queens on Different Rows and Columns with static selection" to BEST_GENETIC_SOLVER,
+        "Genetic Algorithm with Queens on Different Rows and Columns basic" to BEST_GENETIC_SOLVER_BASIC,
         "Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER,
         "Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
