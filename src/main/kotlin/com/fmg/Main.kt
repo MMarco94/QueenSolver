@@ -8,7 +8,11 @@ import com.fmg.solver.BestSolvers
 import com.fmg.solver.BestSolvers.ALL_SOLVERS
 import com.fmg.solver.Solver
 import java.text.DecimalFormat
+import java.time.Duration
+import java.time.Instant
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import kotlin.random.Random
 
 val RANDOM = Random(73)
@@ -25,6 +29,18 @@ fun readInt(message: String): Int {
         } catch (e: NumberFormatException) {
             println("Invalid number!")
         }
+    }
+}
+
+fun readRegex(message: String, pattern: Pattern): Matcher {
+    println(message)
+    while (true) {
+        val nextLine = scanner.nextLine()
+        val matcher = pattern.matcher(nextLine)
+        if (matcher.matches()) {
+            return matcher
+        }
+        println("Invalid pattern!")
     }
 }
 
@@ -90,8 +106,15 @@ private fun doBenchmark() {
     val size = askBoardSize()
 
     val trials = readInt("Enter the number of trials")
-    val maxSteps = readInt("Choose a maximum number of steps")
-
+    val limit = readRegex(
+        "Choose a maximum number of steps, or type [0-9]s to limit in seconds",
+        Pattern.compile("(\\d+)\\s*(s)?")
+    )
+    val (stepsLimit, timeLimit) = if (limit.group(2).isEmpty()) {
+        limit.group(1).toInt() to null
+    } else {
+        null to Duration.ofSeconds(limit.group(1).toLong())
+    }
 
     for ((name, solver) in ALL_SOLVERS) {
         val correctnessPercentageStat = DoubleSummaryStatistics()
@@ -102,25 +125,34 @@ private fun doBenchmark() {
         print("Computing using solver $name")
         for (i in 0 until trials) {
             print(".")
-
-            val (took, ss) = benchmark {
+            val start = Instant.now()
+            val (steps, solution) =
                 solver.createApproximationSequence(size)
-                    .take(maxSteps)
+                    .let { s ->
+                        if (timeLimit != null) {
+                            s.takeWhile {
+                                Duration.between(start, Instant.now()) < timeLimit
+                            }
+                        } else if (stepsLimit != null) {
+                            s.take(stepsLimit)
+                        } else {
+                            throw IllegalStateException()
+                        }
+                    }
                     .withIndex()
                     .last()
-            }
-            val (steps, solution) = ss
 
-            timeStat.accept(took)
+            timeStat.accept(Duration.between(start, Instant.now()).toNanos() / 1000000000.0)
             stepsStat.accept(steps + 1)
             correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
             conflictsStat.accept(TotalConflictEvaluator.evaluate(solution))
         }
         println()
-        println("Time statistics of $name: $timeStat")
-        println("Steps statistics of $name: $stepsStat")
-        println("Conflicts of $name: $conflictsStat")
-        println("Correctness probability of $name: ${correctnessPercentageStat.average * 100}%")
+        println(name)
+        println("Time statistics: $timeStat")
+        println("Steps statistics: $stepsStat")
+        println("Conflicts statistics: $conflictsStat")
+        println("Correctness probability: ${correctnessPercentageStat.average * 100}%")
         println()
         println()
     }
@@ -148,10 +180,9 @@ private fun printSteps(steps: Sequence<Board>) {
 }
 
 private fun printSolution(approximationSequence: Sequence<Board>) {
-    val (took, result) = benchmark {
-        approximationSequence.withIndex().last()
-    }
-    val (steps, solution) = result
+    val start = Instant.now()
+
+    val (steps, solution) = approximationSequence.withIndex().last()
 
     if (solution.queens.size == solution.size && solution.isNQueenSolution()) {
         println("Solution in $steps steps:")
@@ -160,20 +191,11 @@ private fun printSolution(approximationSequence: Sequence<Board>) {
         println("Number of conflicts: " + TotalConflictEvaluator.evaluate(solution))
     }
     solution.print()
-    println("Took ${took * 1000} ms")
+    println("Took ${Duration.between(start, Instant.now()).toNanos() / 1000000.0} ms")
     enterToExit()
 }
 
 private fun enterToExit() {
     println("Enter to exit")
     scanner.nextLine()
-}
-
-/**
- * Returns a pair(seconds it took, result of given computation)
- */
-private fun <R> benchmark(subject: () -> R): Pair<Double, R> {
-    val start = System.nanoTime()
-    val ret = subject()
-    return (System.nanoTime() - start) / 1000000000.0 to ret
 }
