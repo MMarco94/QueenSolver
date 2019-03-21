@@ -1,9 +1,9 @@
 package com.fmg
 
 import com.fmg.data.Board
-import com.fmg.data.ConflictEvaluator
+import com.fmg.data.ConflictBoardEvaluator
 import com.fmg.data.FactorizerBoardGenerator
-import com.fmg.data.TotalConflictEvaluator
+import com.fmg.data.TotalConflictBoardEvaluator
 import com.fmg.solver.BestSolvers
 import com.fmg.solver.BestSolvers.ALL_SOLVERS
 import com.fmg.solver.Solver
@@ -145,7 +145,7 @@ private fun doBenchmark() {
             timeStat.accept(Duration.between(start, Instant.now()).toNanos() / 1000000000.0)
             stepsStat.accept(steps + 1)
             correctnessPercentageStat.accept(if (solution.isNQueenSolution()) 1.0 else 0.0)
-            conflictsStat.accept(TotalConflictEvaluator.evaluate(solution))
+            conflictsStat.accept(TotalConflictBoardEvaluator.evaluate(solution))
         }
         println()
         println(name)
@@ -167,8 +167,8 @@ private fun askBoardSize(): Int {
 
 private fun printSteps(steps: Sequence<Board>) {
     steps.forEachIndexed { step, partialSolution ->
-        val totalConflicts = TotalConflictEvaluator.evaluate(partialSolution)
-        val conflicts = ConflictEvaluator.evaluate(partialSolution)
+        val totalConflicts = TotalConflictBoardEvaluator.evaluate(partialSolution)
+        val conflicts = ConflictBoardEvaluator.evaluate(partialSolution)
         println("Step $step (${partialSolution.queens.size} queens, $totalConflicts totalConflicts, $conflicts conflicts):")
         partialSolution.print()
         println()
@@ -188,7 +188,7 @@ private fun printSolution(approximationSequence: Sequence<Board>) {
         println("Solution in $steps steps:")
     } else {
         println("Best approximation after $steps steps:")
-        println("Number of conflicts: " + TotalConflictEvaluator.evaluate(solution))
+        println("Number of conflicts: " + TotalConflictBoardEvaluator.evaluate(solution))
     }
     solution.print()
     println("Took ${Duration.between(start, Instant.now()).toNanos() / 1000000.0} ms")

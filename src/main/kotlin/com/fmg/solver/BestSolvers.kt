@@ -7,21 +7,21 @@ object BestSolvers {
 
 
     val BEST_HILL_CLIMBING_SOLVER = HillClimbingSolver(
-        TotalConflictEvaluator,
+        TotalConflictBoardEvaluator,
         LogRowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator,
         TerminateWhenNotImproving//TODO
     )
 
     val TABU_SEARCH_SOLVER = TabuSerachSolver(
-        TotalConflictEvaluator,
+        TotalConflictBoardEvaluator,
         LogRowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator,
         TerminateWhenNoConflicts//TODO
     )
 
     val BEST_DETERMINISTIC_HILL_CLIMBING  = HillClimbingSolver(
-        TotalConflictEvaluator,
+        TotalConflictBoardEvaluator,
         DeterministicOneQueenPerRowAndColumnNeighborsGenerator (),
         OneQueenPerRowAndColumnRandomBoardGenerator,
         TerminateWhenNotImproving
@@ -34,13 +34,13 @@ object BestSolvers {
         GeometricDistributionProbabilisticSelector(0.8)
     )
     val SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
-        TotalConflictEvaluator,
+        TotalConflictBoardEvaluator,
         HorizontalQueenMoverNeighborsGenerator,
         OneQueenPerRowRandomBoardGenerator,
         TerminateWhenNoConflicts//TODO
     )
     val BLUE_TORNADO_HILL_CLIMBING_SOLVER = HillClimbingSolver(
-        TotalConflictEvaluator,
+        TotalConflictBoardEvaluator,
         KQueensMoverNeighborsGenerator(2),
         OneQueenPerRowRandomBoardGenerator,
         TerminateWhenNoConflicts//TODO
@@ -81,7 +81,7 @@ object BestSolvers {
     private val KRONECKER_BOARD_GENERATOR = FactorizerBoardGenerator(BEST_HILL_CLIMBING_SOLVER)
 
     val KRONECKER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
-        TotalConflictEvaluator,
+        TotalConflictBoardEvaluator,
         LogRowSwapperNeighborsGenerator(),
         KRONECKER_BOARD_GENERATOR,
         TerminateWhenNoConflicts//TODO
@@ -120,7 +120,7 @@ object BestSolvers {
 
         /*"Genetic Algorithm with Queens on Different Rows and Columns with static selection" to BEST_GENETIC_SOLVER,
         "Genetic Algorithm with Queens on Different Rows and Crossover with Column check" to ONE_ROW_QUEEN_COLUMNCHECK_ROULETTE_WHEEL_GENETIC_SOLVER,
-        "Genetic Algorithm with Queens on Different Rows and Crossover" to ONE_ROW_QUEEN_COLUMNCHECK_ROULETTE_WHEEL_GENETIC_SOLVER*/
+        "Genetic Algorithm with Queens on Different Rows and Crossover" to ONE_ROW_QUEEN_COLUMNCHECK_ROULETTE_WHEEL_GENETIC_SOLVER
 
 
         /*"Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,

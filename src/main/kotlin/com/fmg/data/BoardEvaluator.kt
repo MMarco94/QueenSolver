@@ -4,14 +4,14 @@ interface BoardEvaluator {
     fun evaluate(board: Board): Double
 }
 
-object TotalConflictEvaluator : BoardEvaluator {
+object TotalConflictBoardEvaluator : BoardEvaluator {
 
     override fun evaluate(board: Board): Double {
         return board.queensDisposition.conflictsCount.toDouble()
     }
 }
 
-object ConflictEvaluator : BoardEvaluator {
+object ConflictBoardEvaluator : BoardEvaluator {
 
     override fun evaluate(board: Board): Double {
         return board.queens.count { queen ->
@@ -20,7 +20,7 @@ object ConflictEvaluator : BoardEvaluator {
     }
 }
 
-object ConflictFreeEvaluator : BoardEvaluator {
+object ConflictFreeBoardEvaluator : BoardEvaluator {
     override fun evaluate(board: Board): Double {
         return Board.generateAllQueens(board.size)
             .filterNot { q -> q in board.queens }

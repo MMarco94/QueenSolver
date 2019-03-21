@@ -3,14 +3,14 @@ package com.fmg.data.genetic
 import com.fmg.RANDOM
 import com.fmg.data.Board
 import com.fmg.data.BoardEvaluator
-import com.fmg.data.TotalConflictEvaluator
+import com.fmg.data.TotalConflictBoardEvaluator
 
 interface Selector {
     fun select(population: Collection<Board>, boardLimit: Int = population.size / 2): Collection<Board>
 }
 
 class FitnessSelector(
-    private val fitnessFunction: BoardEvaluator = TotalConflictEvaluator
+    private val fitnessFunction: BoardEvaluator = TotalConflictBoardEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {
         var bl = boardLimit
@@ -22,7 +22,7 @@ class FitnessSelector(
 }
 
 class RouletteWheelSelector(
-    private val fitnessFunction: BoardEvaluator = TotalConflictEvaluator
+    private val fitnessFunction: BoardEvaluator = TotalConflictBoardEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {
         var bl = boardLimit
@@ -70,36 +70,24 @@ class RouletteWheelSelector(
 }
 
 class FitnessProportionalSelector(
-    private val fitnessFunction: BoardEvaluator = TotalConflictEvaluator
+    private val fitnessFunction: BoardEvaluator = TotalConflictBoardEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {
-        val maxconflict = population.first().size * (population.first().size - 1) / 2.0
-        var totalFitnessValue = 0.0
-
         var bl = boardLimit
         if (bl % 2 != 0) {
             bl += 1
         }
 
+        val maxconflict = population.first().size * (population.first().size - 1) / 2.0
+        var totalFitnessValue = population.sumBy { fitnessFunction.evaluate(it).toInt() }.toDouble()
         val weights = mutableListOf<Double>()
         val populationSelected = mutableListOf<Board>()
         var selectedIndex: Int
 
-        for (board in population) {
-            weights.add(maxconflict - fitnessFunction.evaluate(board))
-        }
-
-        for (board in population) {
-            totalFitnessValue += fitnessFunction.evaluate(board)
-        }
-
-        for (i in 0 until weights.size) {
-            weights[i] /= totalFitnessValue
-        }
+        population.forEach { weights.add((maxconflict - fitnessFunction.evaluate(it)) / totalFitnessValue) }
 
         for (i in 0 until boardLimit) {
             selectedIndex = rouletteSelect(weights, totalFitnessValue)
-            //println(selectedIndex)
             val board = population.toMutableList().removeAt(selectedIndex)
             weights.removeAt(selectedIndex)
             populationSelected.add(board)
@@ -122,5 +110,3 @@ class FitnessProportionalSelector(
         }
     }
 }
-
-// sqrt(population.first().size.toDouble()).toInt()

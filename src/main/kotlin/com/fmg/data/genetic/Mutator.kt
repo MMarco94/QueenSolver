@@ -29,8 +29,8 @@ object SwapRowMutator : Mutator {
             val q1 = newBoard.queens.single { it.row == row }
             if (RANDOM.nextDouble() < probability) {
                 val newRow = RANDOM.nextInt(newBoard.size)
-                if (newRow != row) {
-                    val q2 = newBoard.queens.single { q -> q.row == newRow }
+                val q2 = newBoard.queens.single { q -> q.row == newRow }
+                if (q1.row != q2.row && q1.col != q2.col) {
                     newBoard = newBoard.with(
                         toAddQueens = arrayOf(Queen(q1.row, q2.col), Queen(q2.row, q1.col)),
                         toRemoveQueens = arrayOf(q1, q2)
