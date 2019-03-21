@@ -30,7 +30,8 @@ object BestSolvers {
     val SIMULATED_ANNELING = SimulatedAnnealingSolver(
         TotalConflictEvaluator,
         DeterministicOneQueenPerRowAndColumnNeighborsGenerator (),
-        OneQueenPerRowAndColumnRandomBoardGenerator
+        OneQueenPerRowAndColumnRandomBoardGenerator,
+        GeometricDistributionProbabilisticSelector(0.8)
     )
     val SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictEvaluator,
@@ -114,7 +115,6 @@ object BestSolvers {
         //"Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER,
         //"Genetic Algorithm with Queens on Different Rows and Columns with fitness proportional selection" to FITNESS_PROPORTIONAL_GENETIC_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
-        "Deterministic hill climbing" to BEST_DETERMINISTIC_HILL_CLIMBING,
         "Simulated annealing" to SIMULATED_ANNELING,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER
 

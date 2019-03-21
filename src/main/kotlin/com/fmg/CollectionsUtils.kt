@@ -1,6 +1,7 @@
 package com.fmg
 
 import com.fmg.data.BoardWithScore
+import com.fmg.data.LocalSearchSelector
 import com.fmg.data.LocalSearchTerminator
 import java.util.Collections.swap
 import kotlin.math.min
@@ -76,6 +77,9 @@ fun <T> Sequence<T>.repeatLastElement(fallbackIfEmpty: () -> T = { throw Unsuppo
 
 fun Sequence<BoardWithScore>.terminate(localSearchTerminator: LocalSearchTerminator) =
     localSearchTerminator.terminate(this)
+
+fun Sequence<BoardWithScore>.select(selector: LocalSearchSelector) =
+    selector.select(this)
 
 fun <T : Any> Sequence<T>.takeWithProbability(probability: Double): Sequence<T> {
     return takeWithProbability { _ -> probability }
