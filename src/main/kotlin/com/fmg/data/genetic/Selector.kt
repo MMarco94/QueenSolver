@@ -9,7 +9,7 @@ interface Selector {
     fun select(population: Collection<Board>, boardLimit: Int = population.size / 4): Collection<Board>
 }
 
-class NonDarwinianSelector(
+class BestSelector(
     private val fitnessFunction: BoardEvaluator = TotalConflictBoardEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {

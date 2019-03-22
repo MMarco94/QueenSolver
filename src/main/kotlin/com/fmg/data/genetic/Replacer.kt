@@ -10,7 +10,7 @@ interface Replacer {
     ): Collection<Board>
 }
 
-class LambdaMuReplacer(private val selector: Selector = NonDarwinianSelector()) : Replacer {
+class LambdaMuReplacer(private val selector: Selector = BestSelector()) : Replacer {
 
     override fun replace(
         oldPopulation: Collection<Board>,

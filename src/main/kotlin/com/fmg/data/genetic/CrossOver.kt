@@ -21,47 +21,12 @@ object RowQueenCrossOver : CrossOver {
 
             var newBoard1 = board1
             var newBoard2 = board2
-            for (i in firstRowIndexCrossOver..secondRowIndexCrossOver) {
+            for (i in firstRowIndexCrossOver until secondRowIndexCrossOver + 1) {
                 val q1 = newBoard1.queens.single { q -> q.row == i }
                 val q2 = newBoard2.queens.single { q -> q.row == i }
 
                 newBoard1 = newBoard1.withoutQueen(q1).withQueen(q2)
                 newBoard2 = newBoard2.withoutQueen(q2).withQueen(q1)
-            }
-
-            returnBoardCollection.add(newBoard1)
-            returnBoardCollection.add(newBoard2)
-        }
-
-        return returnBoardCollection
-    }
-}
-
-object RowQueenWithColumnCheckCrossOver : CrossOver {
-
-    override fun crossOver(boardPopulation: Collection<Board>): Collection<Board> {
-        val boardSize = boardPopulation.first().size
-        val population = boardPopulation.toList()
-        val returnBoardCollection = mutableListOf<Board>()
-
-        for ((index, board1) in population.withIndex()) {
-            val board2 = population[RANDOM.nextInt(index, population.size)]
-
-            val firstRowIndexCrossOver = RANDOM.nextInt(boardSize)
-            val secondRowIndexCrossOver = RANDOM.nextInt(firstRowIndexCrossOver, boardSize)
-
-            var newBoard1 = board1
-            var newBoard2 = board2
-            for (i in firstRowIndexCrossOver..secondRowIndexCrossOver) {
-                val q1 = newBoard1.queens.single { q -> q.row == i }
-                val q2 = newBoard2.queens.single { q -> q.row == i }
-
-                if (board1.queens.none { q -> q.col == q2.col }) {
-                    newBoard1 = newBoard1.withoutQueen(q1).withQueen(q2)
-                }
-                if (board2.queens.none { q -> q.col == q1.col }) {
-                    newBoard2 = newBoard2.withoutQueen(q2).withQueen(q1)
-                }
             }
 
             returnBoardCollection.add(newBoard1)
@@ -88,7 +53,7 @@ object SwapRowsCrossOver : CrossOver {
 
             var newBoard1 = board1
             var newBoard2 = board2
-            for (i in firstRowIndexCrossOver until secondRowIndexCrossOver) {
+            for (i in firstRowIndexCrossOver until secondRowIndexCrossOver + 1) {
                 val q1 = newBoard1.queens.single { q -> q.row == i }
                 val q2 = newBoard2.queens.single { q -> q.col == q1.col }
 

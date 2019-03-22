@@ -6,7 +6,7 @@ import com.fmg.data.OneQueenPerRowAndColumnRandomBoardGenerator
 import kotlin.math.sqrt
 
 interface PopulationGenerator {
-    fun generatePopulation(boardSize: Int, populationSize: Int = (sqrt(boardSize.toDouble()) * boardSize).toInt()): Collection<Board>
+    fun generatePopulation(boardSize: Int, populationSize: Int = 10 * boardSize): Collection<Board>
 }
 
 /**
