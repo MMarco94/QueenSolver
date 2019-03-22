@@ -49,14 +49,14 @@ object BestSolvers {
 
     val BEST_GENETIC_SOLVER = GeneticSolver(
         IndependentPopulationGenerator(),
-        FitnessSelector(),
+        NonDarwinianSelector(),
         RowQueenWithColumnCheckCrossOver,
         SwapRowMutator,
         LambdaMuReplacer()
     )
     val BEST_GENETIC_SOLVER_BASIC = GeneticSolver(
         IndependentPopulationGenerator(),
-        FitnessSelector(),
+        NonDarwinianSelector(),
         RowQueenWithColumnCheckCrossOver,
         HorizontalQueenMoverMutator,
         LambdaMuReplacer()

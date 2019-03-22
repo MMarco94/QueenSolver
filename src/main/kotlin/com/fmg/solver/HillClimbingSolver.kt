@@ -1,6 +1,5 @@
 package com.fmg.solver
 
-import com.fmg.RANDOM
 import com.fmg.allMinBy
 import com.fmg.data.*
 import com.fmg.randomOrNull

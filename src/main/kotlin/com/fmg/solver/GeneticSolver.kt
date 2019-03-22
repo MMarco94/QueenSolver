@@ -21,7 +21,7 @@ class GeneticSolver(
 
             /*val np = selector.select((population + mutated), population.size)
 
-            var sum: Double = 0.0
+            var sum = 0.0
             for (i in np) {
                 sum += TotalConflictBoardEvaluator.evaluate(i)
             }

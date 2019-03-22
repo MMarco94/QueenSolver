@@ -6,10 +6,10 @@ import com.fmg.data.BoardEvaluator
 import com.fmg.data.TotalConflictBoardEvaluator
 
 interface Selector {
-    fun select(population: Collection<Board>, boardLimit: Int = population.size / 2): Collection<Board>
+    fun select(population: Collection<Board>, boardLimit: Int = population.size / 4): Collection<Board>
 }
 
-class FitnessSelector(
+class NonDarwinianSelector(
     private val fitnessFunction: BoardEvaluator = TotalConflictBoardEvaluator
 ) : Selector {
     override fun select(population: Collection<Board>, boardLimit: Int): Collection<Board> {
@@ -79,7 +79,7 @@ class FitnessProportionalSelector(
         }
 
         val maxconflict = population.first().size * (population.first().size - 1) / 2.0
-        var totalFitnessValue = population.sumBy { fitnessFunction.evaluate(it).toInt() }.toDouble()
+        val totalFitnessValue = population.sumBy { fitnessFunction.evaluate(it).toInt() }.toDouble()
         val weights = mutableListOf<Double>()
         val populationSelected = mutableListOf<Board>()
         var selectedIndex: Int
@@ -96,7 +96,7 @@ class FitnessProportionalSelector(
         return populationSelected
     }
 
-    private fun rouletteSelect(weights: List<Double>, weightSum : Double): Int {
+    private fun rouletteSelect(weights: List<Double>, weightSum: Double): Int {
         var value = RANDOM.nextDouble(1.0) * weightSum
         var i = 0
         while (value > 0.0 && i < weights.size) {

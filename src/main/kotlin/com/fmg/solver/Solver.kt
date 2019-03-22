@@ -2,7 +2,7 @@ package com.fmg.solver
 
 import com.fmg.data.*
 
-abstract class Solver() {
+abstract class Solver {
     fun solve(size: Int): Board {
         val solution = createApproximationSequence(size).lastOrNull()
         if (solution == null || !solution.isNQueenSolution()) {
