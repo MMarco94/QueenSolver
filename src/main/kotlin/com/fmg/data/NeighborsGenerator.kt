@@ -141,7 +141,27 @@ class SimulatedAnnealingNeighborsGenerator(
     }
 }
 
-class DeterministicOneQueenPerRowAndColumnNeighborsGenerator(
+class RowSwapperNeighborsGenerator(
+    val queenEvaluator: QueenEvaluator = TotalQueenConflictEvaluator
+) : NeighborsGenerator {
+    override fun generateNeighbors(board: Board): Sequence<Board> {
+        return board.queens
+            .asSequence()
+            .flatMap { q1 ->
+                board.queens
+                    .asSequence()
+                    .filter { q2 -> q1 != q2 }
+                    .map { q2 ->
+                        board.with(
+                            toAddQueens = arrayOf(Queen(q1.row, q2.col), Queen(q2.row, q1.col)),
+                            toRemoveQueens = arrayOf(q1, q2)
+                        )
+                    }
+            }
+    }
+}
+
+class RowSwapperWithQueenHeuristicNeighborsGenerator(
     val queenEvaluator: QueenEvaluator = TotalQueenConflictEvaluator
 ) : NeighborsGenerator {
     override fun generateNeighbors(board: Board): Sequence<Board> {
@@ -162,4 +182,6 @@ class DeterministicOneQueenPerRowAndColumnNeighborsGenerator(
             }
     }
 }
+
+
 

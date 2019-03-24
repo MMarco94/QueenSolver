@@ -13,25 +13,32 @@ object BestSolvers {
         TerminateWhenNotImproving//TODO
     )
 
-    val TABU_SEARCH_SOLVER = TabuSerachSolver(
+    val NEW_SOLVER = HillClimbingSolver(
         TotalConflictBoardEvaluator,
-        LogRowSwapperNeighborsGenerator(),
+        RowSwapperNeighborsGenerator(),
         OneQueenPerRowAndColumnRandomBoardGenerator,
-        TerminateWhenNoConflicts//TODO
+        TerminateWhenNotImproving//TODO
+    )
+
+    val SINGLE_MOVE = HillClimbingSolver(
+        TotalConflictBoardEvaluator,
+        HorizontalQueenMoverNeighborsGenerator,
+        OneQueenPerRowAndColumnRandomBoardGenerator,
+        TerminateWhenNotImproving
     )
 
     val BEST_DETERMINISTIC_HILL_CLIMBING  = HillClimbingSolver(
         TotalConflictBoardEvaluator,
-        DeterministicOneQueenPerRowAndColumnNeighborsGenerator (),
+        RowSwapperWithQueenHeuristicNeighborsGenerator (),
         OneQueenPerRowAndColumnRandomBoardGenerator,
         TerminateWhenNotImproving
     )
 
     val SIMULATED_ANNELING = SimulatedAnnealingSolver(
         TotalConflictBoardEvaluator,
-        DeterministicOneQueenPerRowAndColumnNeighborsGenerator (),
+        RowSwapperWithQueenHeuristicNeighborsGenerator (),
         OneQueenPerRowAndColumnRandomBoardGenerator,
-        GeometricDistributionProbabilisticSelector(0.8)
+        UniformDistributionProbabilisticSelector
     )
     val SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER = HillClimbingSolver(
         TotalConflictBoardEvaluator,
@@ -105,22 +112,33 @@ object BestSolvers {
     )
 
     val ALL_SOLVERS = mapOf(
-        "Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER,
+        /*"Genetic Algorithm with Queens on Different Rows and Columns with roulette wheel selection" to ROULETTE_WHEEL_GENETIC_SOLVER,
         "Genetic Algorithm with Queens on Different Rows and Columns with fitness proportional selection" to FITNESS_PROPORTIONAL_GENETIC_SOLVER,
         "Genetic Algorithm with Queens on Different Rows and Columns with non darwinian selection" to BEST_GENETIC_SOLVER_SWAP,
         "Genetic Algorithm with Queens on Different Rows with fitness proportional selection" to BEST_GENETIC_SOLVER_ROW
-        /*"Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
+
         "Simulated annealing" to SIMULATED_ANNELING,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER*/
 
 
         /*"Hill Climbing with Kℝ0ℕ€cK€ℝ" to KRONECKER_HILL_CLIMBING_SOLVER,
         "Hill Climbing log row swapper" to BEST_HILL_CLIMBING_SOLVER,
+        */
+
+
+        /*"New one" to NEW_SOLVER,
+        "Single move"  to SINGLE_MOVE*/
+
+
         "Deterministic hill climbing" to BEST_DETERMINISTIC_HILL_CLIMBING,
+        "Simulated annealing" to SIMULATED_ANNELING
+
+
+        /*
         "Simulated annealing" to SIMULATED_ANNELING,
         "Constraint propagation" to CONSTRAINT_PROPAGATION_SOLVER,
         "Hill Climbing" to SINGLE_QUEEN_MOVER_HILL_CLIMBING_SOLVER,
-        "Hill Climbing with multiple moves" to BLUE_TORNADO_HILL_CLIMBING_SOLVER,
+
         "Kronecker Genetic Algorithm" to KRONECKER_ROULETTE_WHEEL_GENETIC_SOLVER*/
     )
 }

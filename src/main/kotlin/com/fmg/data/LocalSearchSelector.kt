@@ -40,6 +40,17 @@ object UniformDistributionProbabilisticSelector : LocalSearchSelector {
     }
 }
 
+class UniformDistributionAmongKBestProbabilisticSelector(
+    val k : Int
+) : LocalSearchSelector {
+    override fun select(boardSequence: Sequence<BoardWithScore>): BoardWithScore {
+        return boardSequence
+            .sortedBy { it.score }
+            .take(k)
+            .toList()
+            .random()
+    }
+}
 object MinimumProbabilisticSelector : LocalSearchSelector {
     override fun select(boardSequence: Sequence<BoardWithScore>): BoardWithScore {
         return boardSequence
